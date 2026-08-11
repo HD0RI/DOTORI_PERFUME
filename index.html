@@ -2126,8 +2126,9 @@ $('#zoom2x').addEventListener('click', () => {
 });
 
 function showStep(which){
-  $('#stepForm').style.display   = which === 'form' ? '' : 'none';
-  $('#stepResult').style.display = which === 'result' ? '' : 'none';
+  // CSS 에 #stepResult{display:none} 이 걸려 있으므로 'block' 을 명시해야 합니다
+  $('#stepForm').style.display   = which === 'form' ? 'block' : 'none';
+  $('#stepResult').style.display = which === 'result' ? 'block' : 'none';
   document.querySelector('.wrap').classList.toggle('wide', which === 'result');
   window.scrollTo({ top:0, behavior:'smooth' });
   if(which === 'form') $('#charName').focus();
