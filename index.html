@@ -58,6 +58,9 @@
   .linkbtn{background:none;border:0;padding:0;font:inherit;font-size:12.5px;color:var(--sub);cursor:pointer;
     text-decoration:underline;text-underline-offset:3px}
   .linkbtn:hover{color:var(--pick)}
+  #imgPrev{display:none;width:100%;height:auto;margin-top:12px;border-radius:8px;
+    border:1px solid var(--line);background:#fff}
+  #imgPrev.on{display:block}
   #imgCtl{display:none;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:12px}
   #imgCtl.on{display:grid}
   #imgCtl label{display:block;font-size:11.5px;color:var(--sub);margin-bottom:2px}
@@ -148,6 +151,7 @@
         </div>
       </div>
       <input type="file" id="file" accept="image/*" hidden>
+      <canvas id="imgPrev"></canvas>
       <div id="imgCtl">
         <div><label for="zoom">확대</label><input type="range" id="zoom" min="1" max="2.5" step="0.02" value="1"></div>
         <div><label for="ox">좌우</label><input type="range" id="ox" min="-1" max="1" step="0.02" value="0"></div>
@@ -220,6 +224,13 @@
               사이트 안에서 문장을 만듭니다. 키는 입력창에만 머물고 저장되지 않습니다.
             </p>
             <input type="password" id="aiKey" placeholder="sk-ant-... (비워두면 사용 안 함)">
+          </div>
+          <div id="aiCodeBox" style="display:none">
+            <label class="lbl" for="aiCode">이용 코드</label>
+            <p class="note" style="margin:0 0 10px">
+              소개글 기능은 코드를 받은 분만 쓸 수 있습니다. 코드가 없어도 조향과 카드 저장은 그대로 됩니다.
+            </p>
+            <input type="text" id="aiCode" placeholder="받으신 코드를 넣어주세요" autocomplete="off">
           </div>
           <label class="lbl" for="aiVoice" style="margin:16px 0 8px">글의 시점</label>
           <select id="aiVoice">
@@ -878,7 +889,8 @@ function blend(input){
   const wishOilNames = new Set(wishHits.filter(h => !h.neg).flatMap(h => h.o || []));
   const avoidOils = new Set(wishHits.filter(h => h.neg).flatMap(h => h.o || []));
   // 설정 글에서 '싫다'고 적은 향료도 피합니다
-  const power = Math.max(1, Math.min(5, Number(input.power || 3) + powerShift));
+  const pwRaw = Number(input.power);
+  const power = Math.max(1, Math.min(5, Math.round((Number.isFinite(pwRaw) ? pwRaw : 3) + powerShift)));
   const colorFams = colorToFamilies(color);
 
   /* 설정 글에서 단서 읽기 */
@@ -1035,19 +1047,21 @@ function blend(input){
   hits.filter(h => !h.neg).forEach(h => {
     if(links.length >= 2) return;
     // 그 단서의 대표 계열에 가깝고, 비중이 큰 향료를 고릅니다
+    const hf = h.f || [];
     const cand = flat
-      .filter(o => o.f.some(f => h.f.includes(f)) && !links.some(l => l.oil === o.k))
-      .sort((a, b) => ((b.f[0] === h.f[0]) - (a.f[0] === h.f[0]))
-                    || (b.f.includes(h.f[0]) - a.f.includes(h.f[0]))
+      .filter(o => o.f.some(f => hf.includes(f)) && !links.some(l => l.oil === o.k))
+      .sort((a, b) => ((b.f[0] === hf[0]) - (a.f[0] === hf[0]))
+                    || (b.f.includes(hf[0]) - a.f.includes(hf[0]))
                     || (ratioOf(b) - ratioOf(a)));
     if(cand[0]) links.push({ word:h.word, oil:cand[0].k });
   });
   const wishLinks = [];
   wishHits.filter(h => !h.neg).forEach(h => {
     if(wishLinks.length >= 2) return;
+    const ho = h.o || [], hf = h.f || [];   // 향료를 콕 집지 않은 표현도 있습니다
     const cand = flat
-      .filter(o => (h.o.includes(o.k) || o.f.some(f => h.f.includes(f))) && !wishLinks.some(l => l.oil === o.k))
-      .sort((a, b) => ((h.o.includes(b.k)) - (h.o.includes(a.k))) || (ratioOf(b) - ratioOf(a)));
+      .filter(o => (ho.includes(o.k) || o.f.some(f => hf.includes(f))) && !wishLinks.some(l => l.oil === o.k))
+      .sort((a, b) => ((ho.includes(b.k)) - (ho.includes(a.k))) || (ratioOf(b) - ratioOf(a)));
     if(cand[0]) wishLinks.push({ word:h.word, oil:cand[0].k });
   });
   parts.wish = wishLinks.length
@@ -1930,6 +1944,7 @@ $('#clearImg').addEventListener('click', e => {
   state.image = null; fileInput.value = '';
   $('#thumb').classList.remove('on'); $('#dropIdle').style.display = '';
   $('#imgCtl').classList.remove('on');
+  drawPreview();
   if(state.data) paint();
 });
 
@@ -1945,6 +1960,7 @@ async function loadImage(file){
     $('#dropIdle').style.display = 'none';
     $('#imgCtl').classList.add('on');
     ['zoom','ox','oy'].forEach(k => $('#' + k).value = k === 'zoom' ? 1 : 0);
+    drawPreview();
     if(state.data) paint();
   }catch(err){
     toast('이미지를 읽지 못했습니다.');
@@ -1979,8 +1995,30 @@ async function decodeUpright(file){
 ['zoom','ox','oy'].forEach(k => $('#' + k).addEventListener('input', () => {
   if(!state.image) return;
   state.image[k] = Number($('#' + k).value);
+  drawPreview();
   if(state.data) paint();
 }));
+
+/* 카드에 실릴 모습 그대로 잘라 보여줍니다 */
+function drawPreview(){
+  const cv = $('#imgPrev');
+  if(!cv) return;
+  if(!state.image){ cv.classList.remove('on'); return; }
+  cv.classList.add('on');
+  const ratio = state.layout === 'tall' ? 0.74 : 1.18;   // 카드에서 쓰는 액자 비율
+  const W = 460, H = Math.round(W * ratio);
+  cv.width = W; cv.height = H;
+  const x = cv.getContext('2d');
+  x.fillStyle = '#fff';
+  x.fillRect(0, 0, W, H);
+  const img = state.image.el;
+  const iw = img.naturalWidth || img.width, ih = img.naturalHeight || img.height;
+  const cover = Math.max(W / iw, H / ih) * (state.image.zoom || 1);
+  const dw = iw * cover, dh = ih * cover;
+  const dx = (W - dw) / 2 + (state.image.ox || 0) * (dw - W) / 2;
+  const dy = (H - dh) / 2 + (state.image.oy || 0) * (dh - H) / 2;
+  x.drawImage(img, dx, dy, dw, dh);
+}
 
 /* ---------- 조향 ---------- */
 function gather(){
@@ -2071,6 +2109,7 @@ $('#aiWrite').addEventListener('click', async () => {
 
 $('#flip').addEventListener('click', async () => {
   state.layout = state.layout === 'tall' ? 'wide' : 'tall';
+  drawPreview();
   await paint();
 });
 
@@ -2103,6 +2142,12 @@ const AI_PROXY = 'https://perfume-proxy.gnuhbic9303.workers.dev';
 
 // 프록시를 쓰면 방문자에게 키를 물어볼 이유가 없으니 그 부분만 숨깁니다
 if(AI_PROXY && $('#aiKeyBox')) $('#aiKeyBox').style.display = 'none';
+if(AI_PROXY && $('#aiCodeBox')) $('#aiCodeBox').style.display = '';
+// 주소에 ?code=... 가 붙어 있으면 코드를 미리 채워 둡니다
+(function fillCode(){
+  const c = new URLSearchParams(location.search).get('code');
+  if(c && $('#aiCode')) $('#aiCode').value = c;
+})();
 
 /* 서술 관점 — 같은 배합이라도 시점과 어조가 달라집니다 */
 const VOICES = {
@@ -2171,7 +2216,7 @@ async function writeWithAI(input){
       ? await fetch(AI_PROXY, {
           method:'POST',
           headers:{ 'Content-Type':'application/json' },
-          body: JSON.stringify({ user, voice })   // 모델과 규칙은 프록시가 정합니다
+          body: JSON.stringify({ user, voice, code: ($('#aiCode') ? $('#aiCode').value.trim() : '') })
         })
       : await fetch('https://api.anthropic.com/v1/messages', {
           method:'POST',
