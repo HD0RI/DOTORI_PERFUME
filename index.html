@@ -1,0 +1,2215 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>캐릭터 향수 카드</title>
+<meta name="description" content="캐릭터 설정을 넣으면 탑·미들·베이스 노트와 비슷한 향수를 카드로 만들어 드려요." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23E9A6B8'/%3E%3Cpath d='M12 7h8v3l3 4v10a2 2 0 0 1-2 2H11a2 2 0 0 1-2-2V14l3-4V7z' fill='%23fff' opacity='.92'/%3E%3Crect x='13' y='4' width='6' height='3' rx='1' fill='%23fff' opacity='.7'/%3E%3C/svg%3E">
+<meta name="theme-color" content="#E9A6B8">
+<meta property="og:title" content="캐릭터 향수 카드" />
+<meta property="og:description" content="캐릭터에게 어울리는 향을 조향해 드려요." />
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700&family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FAF1F3; --ink:#2A2E2B; --sub:rgba(42,46,43,.55); --line:rgba(42,46,43,.16);
+    --pick:#E9A6B8; --r:10px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:var(--bg);transition:background .4s; color:var(--ink);
+    font-family:'Pretendard',-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+    font-weight:400; line-height:1.7; letter-spacing:-.01em;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:520px;margin:0 auto;padding:60px 22px 88px;transition:max-width .3s}
+  .wrap.wide{max-width:1240px}
+
+  h1{font-weight:600;font-size:30px;margin:0 0 8px;letter-spacing:-.03em}
+  .sub{color:var(--sub);font-size:14.5px;margin:0 0 38px;font-weight:400}
+
+  .field{margin-bottom:26px}
+  label.lbl,p.lbl{display:block;font-size:13px;font-weight:500;color:var(--sub);margin:0 0 8px}
+  .lbl em{font-style:normal;font-weight:400;opacity:.7}
+  input[type=text],textarea,select,input[type=password]{
+    width:100%;background:#fff;border:1px solid var(--line);border-radius:8px;
+    padding:11px 13px;font:inherit;font-size:15px;color:var(--ink)
+  }
+  select{appearance:none;
+    background-image:linear-gradient(45deg,transparent 50%,rgba(42,46,43,.5) 50%),linear-gradient(135deg,rgba(42,46,43,.5) 50%,transparent 50%);
+    background-position:calc(100% - 18px) 50%,calc(100% - 13px) 50%;background-size:5px 5px;background-repeat:no-repeat}
+  input:focus,textarea:focus,select:focus{outline:none;border-color:var(--pick);box-shadow:0 0 0 3px rgba(233,166,184,.28)}
+  ::placeholder{color:rgba(42,46,43,.3)}
+
+  .drop{border:1px dashed var(--line);border-radius:var(--r);padding:22px;text-align:center;cursor:pointer;
+    background:#fff;transition:.2s}
+  .drop:hover,.drop.over{border-color:var(--pick)}
+  .drop p{margin:0;font-size:14px;color:var(--sub)}
+  .drop small{display:block;font-size:11.5px;color:rgba(42,46,43,.35);margin-top:4px}
+  .thumb{display:none;align-items:center;gap:12px;text-align:left}
+  .thumb.on{display:flex}
+  .thumb img{width:54px;height:66px;object-fit:cover;border-radius:6px}
+  .thumb b{display:block;font-weight:400;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px}
+  .linkbtn{background:none;border:0;padding:0;font:inherit;font-size:12.5px;color:var(--sub);cursor:pointer;
+    text-decoration:underline;text-underline-offset:3px}
+  .linkbtn:hover{color:var(--pick)}
+  #imgCtl{display:none;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:12px}
+  #imgCtl.on{display:grid}
+  #imgCtl label{display:block;font-size:11.5px;color:var(--sub);margin-bottom:2px}
+  input[type=range]{width:100%;accent-color:var(--ink);margin:0}
+
+  .chips{display:flex;flex-wrap:wrap;gap:7px}
+  .chip input{position:absolute;opacity:0;width:0;height:0}
+  .chip span{display:inline-block;padding:7px 13px;background:#fff;border:1px solid var(--line);
+    border-radius:100px;font-size:13.5px;cursor:pointer;transition:.15s;user-select:none}
+  .chip input:checked + span{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .chip input:focus-visible + span{outline:2px solid var(--pick);outline-offset:2px}
+
+  .colorrow{display:flex;align-items:center;gap:10px}
+  input[type=color]{width:52px;height:42px;padding:2px;border:1px solid var(--line);background:#fff;
+    border-radius:8px;cursor:pointer}
+  #hex{font-size:13.5px;max-width:120px;letter-spacing:.02em}
+
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .scale{display:flex;justify-content:space-between;font-size:11.5px;color:var(--sub);margin-top:2px}
+
+  details{border-top:1px solid var(--line);margin-top:30px;padding-top:18px}
+  summary{cursor:pointer;font-size:13.5px;color:var(--sub);list-style:none}
+  summary::-webkit-details-marker{display:none}
+  summary::before{content:"＋ "}
+  details[open] summary::before{content:"− "}
+  details > div{padding-top:20px}
+  .note{font-size:11.5px;color:rgba(42,46,43,.42);margin:7px 0 0;line-height:1.6}
+
+  .go{width:100%;margin-top:34px;padding:17px;border:0;border-radius:var(--r);background:var(--ink);
+    color:#fff;font-family:inherit;font-weight:600;font-size:16px;letter-spacing:-.01em;cursor:pointer;transition:.2s}
+  .go:hover:not(:disabled){background:var(--pick)}
+  .go:disabled{opacity:.5;cursor:progress}
+  .go:focus-visible,.ghost:focus-visible,.linkbtn:focus-visible,.drop:focus-visible{outline:2px solid var(--pick);outline-offset:3px}
+
+  #stepResult{display:none}
+  #card{width:100%;height:auto;display:block;border-radius:var(--r);box-shadow:0 10px 30px rgba(42,46,43,.14)}
+  .actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:18px;max-width:640px;margin-left:auto;margin-right:auto}
+  .ghost.span2{grid-column:1 / -1}
+  .ghost{background:#fff;border:1px solid var(--line);color:var(--ink);padding:13px;border-radius:var(--r);
+    font:inherit;font-weight:500;font-size:14px;cursor:pointer;transition:.18s}
+  .ghost:hover{border-color:var(--pick);color:var(--pick)}
+  .ghost.key{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .ghost.key:hover{background:var(--pick);border-color:var(--pick);color:#fff}
+
+  #tips{font-size:13.5px;color:var(--sub);max-width:640px;margin:0 auto}
+  #tips .accord{font-size:15px;font-weight:500;color:var(--ink);margin:0;line-height:1.6}
+  #tips h3{font-size:13px;color:rgba(42,46,43,.5);font-weight:600;margin:24px 0 10px}
+  #tips ul{list-style:none;padding:0;margin:0}
+  #tips li{padding-left:14px;position:relative;margin-bottom:6px;line-height:1.6}
+  #tips li::before{content:"·";position:absolute;left:2px}
+  #tips li b{font-weight:400;color:var(--ink)}
+
+  #toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,16px);background:var(--ink);color:#fff;
+    padding:12px 18px;border-radius:8px;font-size:13.5px;opacity:0;pointer-events:none;transition:.25s;z-index:50;
+    max-width:min(90vw,400px);box-shadow:0 8px 24px rgba(0,0,0,.2)}
+  #toast.on{opacity:1;transform:translate(-50%,0)}
+
+  footer{color:rgba(42,46,43,.38);font-size:11.5px;margin-top:40px;text-align:center;line-height:1.8}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>캐릭터 향수 카드</h1>
+  <p class="sub">설정을 넣으면 어울리는 향을 조향해 드려요.<br>향료 133종·향수 110종을 놓고 골라요.</p>
+
+  <form id="stepForm" autocomplete="off" onsubmit="return false">
+
+    <div class="field">
+      <label class="lbl" for="charName">캐릭터 이름</label>
+      <input type="text" id="charName" placeholder="세이렌" maxlength="30">
+    </div>
+
+    <div class="field">
+      <p class="lbl">이미지 <em>(선택)</em></p>
+      <div class="drop" id="drop" tabindex="0" role="button" aria-label="이미지 선택">
+        <div id="dropIdle">
+          <p>이미지 추가</p>
+          <small>브라우저 안에서만 쓰이고 서버로 가지 않아요</small>
+        </div>
+        <div class="thumb" id="thumb">
+          <img id="thumbImg" alt="">
+          <div>
+            <b id="thumbName"></b>
+            <button type="button" class="linkbtn" id="clearImg">삭제</button>
+          </div>
+        </div>
+      </div>
+      <input type="file" id="file" accept="image/*" hidden>
+      <div id="imgCtl">
+        <div><label for="zoom">확대</label><input type="range" id="zoom" min="1" max="2.5" step="0.02" value="1"></div>
+        <div><label for="ox">좌우</label><input type="range" id="ox" min="-1" max="1" step="0.02" value="0"></div>
+        <div><label for="oy">위아래</label><input type="range" id="oy" min="-1" max="1" step="0.02" value="0"></div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="lbl" for="color">상징색</label>
+      <div class="colorrow">
+        <input type="color" id="color" value="#E9A6B8">
+        <input type="text" id="hex" value="#E9A6B8" maxlength="7" aria-label="색상 코드">
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="lbl" for="desc">성격 · 특징</label>
+      <textarea id="desc" rows="5" maxlength="300"
+        placeholder="예 · 폐병원에서 혼자 피아노를 치는 유령. 말수가 적고 오래된 것에 애착이 있다. 비 오는 날을 좋아한다."></textarea>
+      <p class="note">성격·배경·좋아하는 것을 적을수록 향이 달라집니다.
+        바다·성당·가죽·제과·피아노 등 300개 넘는 낱말을 알아보고, 무엇을 어떤 향료로 옮겼는지 결과에 적어드려요.</p>
+    </div>
+
+    <div class="field">
+      <p class="lbl">성격 키워드 <em>(선택) · 최대 3개</em></p>
+      <div class="chips" id="traits"></div>
+    </div>
+
+    <details>
+      <summary>더 자세히 정하기</summary>
+      <div>
+        <div class="field">
+          <label class="lbl" for="tagline">캐치프레이즈 <em>(선택)</em></label>
+          <input type="text" id="tagline" placeholder="물속에서만 노래하는 사람" maxlength="40">
+        </div>
+
+        <div class="field">
+          <p class="lbl">떠오르는 향 계열 <em>(선택) · 최대 3개</em></p>
+          <div class="chips" id="prefs"></div>
+        </div>
+
+        <div class="field">
+          <label class="lbl" for="wish">떠오르는 향 느낌 <em>(서술형 / 선택)</em></label>
+          <textarea id="wish" rows="3" maxlength="200"
+            placeholder="예 · 깨끗한 비누향, 담배향이 조금, 무겁게"></textarea>
+          <p class="note">향 계열을 몰라도 됩니다. 평소 쓰는 말로 적으면 알아서 계열을 잡습니다.
+            "무겁게 / 은은하게"는 향의 세기에, "단 향은 빼고"처럼 쓰면 그 계열을 피해서 만듭니다.</p>
+        </div>
+
+        <div class="row2">
+          <div class="field">
+            <label class="lbl" for="season">계절</label>
+            <select id="season">
+              <option value="상관없음">상관없음</option>
+              <option>봄</option><option>여름</option><option>가을</option><option>겨울</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="lbl" for="power">향의 세기</label>
+            <input type="range" id="power" min="1" max="5" value="3">
+            <div class="scale"><span>은은</span><span>강렬</span></div>
+          </div>
+        </div>
+
+        <div class="field" id="aiKeyField" style="border-top:1px solid var(--line);padding-top:18px;margin-top:22px">
+          <label class="lbl" for="aiKey">API 키 <em>(선택)</em></label>
+          <p class="note" style="margin:0 0 10px">
+            API를 사용할 시 문장이 매번 다르게 작성됩니다. 비워두실 경우 사용 가능하나
+            사이트 안에서 문장을 만듭니다. 키는 입력창에만 머물고 저장되지 않습니다.
+          </p>
+          <input type="password" id="aiKey" placeholder="sk-ant-... (비워두면 사용 안 함)">
+          <label class="lbl" for="aiVoice" style="margin:16px 0 8px">글의 시점</label>
+          <select id="aiVoice">
+            <option value="random">무작위로 (누를 때마다 다르게)</option>
+          </select>
+        </div>
+
+      </div>
+    </details>
+
+    <button class="go" id="make" type="button">조향하기</button>
+  </form>
+
+  <section id="stepResult">
+    <canvas id="card" aria-label="조향 결과 카드"></canvas>
+    <div class="actions">
+      <button class="ghost key" id="save">이미지 저장</button>
+      <button class="ghost" id="share">트위터 공유</button>
+      <button class="ghost" id="zoom2x">크게 보기</button>
+      <button class="ghost" id="reroll">다른 조합으로</button>
+      <button class="ghost" id="aiWrite">소개글 새로 쓰기</button>
+      <button class="ghost" id="flip">세로형으로</button>
+      <button class="ghost span2" id="restart">다시 입력하기</button>
+    </div>
+    <details open style="margin-top:24px;max-width:640px;margin-left:auto;margin-right:auto">
+      <summary>더 자세한 설명</summary>
+      <div id="tips"></div>
+    </details>
+  </section>
+
+  <footer>
+    배합 비율과 향수 추천은 감상용 참고안이에요.<br>
+    직접 만들 때는 향료별 IFRA 권장 사용량을 확인해 주세요.
+  </footer>
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>/* ============================================================
+   engine.js — 키 없이 브라우저 안에서만 도는 조향 엔진
+   ============================================================ */
+
+/* ---------- 어휘 ---------- */
+const TRAITS = ['차분한','다정한','냉소적인','열정적인','신비로운','장난기 많은','고고한','순수한','위험한','우울한','성실한','자유로운'];
+const FAMILIES = ['시트러스','플로럴','우디','머스크','구르망','아쿠아틱','스파이시','그린','앰버','파우더리','인센스','레더'];
+const SEASONS = ['봄','여름','가을','겨울'];
+
+/* 메인 어코드 — 향의 인상을 이루는 덩어리와 그 색 */
+const ACCORD_COLOR = {
+  '시트러스':'#E3B23C','프루티':'#D97F5F','화이트 플로럴':'#E0D3BE','로지':'#CE8298','파우더리':'#C6B4C8',
+  '그린':'#8AA663','아로마틱':'#9AAE7E','아쿠아틱':'#84AECF','프레시 스파이시':'#C08B5F','웜 스파이시':'#B05F3B',
+  '우디':'#96795A','침엽수':'#6D8A6B','어시':'#7B6B57','머스키':'#C4BAAA','앰버':'#C1953F',
+  '발사믹':'#A2703C','바닐라':'#D8BE8C','스위트':'#DFA3B1','구르망':'#A9754F','레더':'#77584A',
+  '스모키':'#877D75','인센스':'#9890B4','애니멀릭':'#8B6858','알데하이드':'#CFCFC2'
+};
+
+/* ---------- 향료 사전 (90종) ----------
+   l 층(0탑 1미들 2베이스) / f 계열 / t 성격 / s 계절 / w 온도감(-2찬~2따뜻) / p 세기(1~5) / a 어코드 */
+const OILS = [
+  // ── 탑 노트 ─────────────────────────────────────────────
+  {k:'베르가못',e:'Bergamot',l:0,f:['시트러스'],t:['차분한','자유로운','성실한'],s:['봄','여름'],w:-1,p:2,a:['시트러스','아로마틱']},
+  {k:'레몬',e:'Lemon',l:0,f:['시트러스'],t:['순수한','성실한','장난기 많은'],s:['여름'],w:-1,p:2,a:['시트러스']},
+  {k:'라임',e:'Lime',l:0,f:['시트러스'],t:['장난기 많은','자유로운','냉소적인'],s:['여름'],w:-2,p:3,a:['시트러스','그린']},
+  {k:'스위트오렌지',e:'Sweet Orange',l:0,f:['시트러스'],t:['다정한','순수한','열정적인'],s:['봄','겨울'],w:1,p:2,a:['시트러스','스위트']},
+  {k:'자몽',e:'Grapefruit',l:0,f:['시트러스'],t:['자유로운','장난기 많은','열정적인'],s:['봄','여름'],w:-1,p:3,a:['시트러스','프루티']},
+  {k:'만다린',e:'Mandarin',l:0,f:['시트러스'],t:['다정한','순수한','장난기 많은'],s:['봄','겨울'],w:1,p:2,a:['시트러스','스위트']},
+  {k:'유자',e:'Yuzu',l:0,f:['시트러스','그린'],t:['순수한','차분한','고고한'],s:['봄','겨울'],w:-1,p:2,a:['시트러스','그린']},
+  {k:'페티그레인',e:'Petitgrain',l:0,f:['시트러스','그린'],t:['냉소적인','고고한','성실한'],s:['봄','여름'],w:-1,p:3,a:['시트러스','아로마틱','그린']},
+  {k:'핑크페퍼',e:'Pink Pepper',l:0,f:['스파이시'],t:['장난기 많은','열정적인','자유로운'],s:['봄','가을'],w:1,p:3,a:['프레시 스파이시','프루티']},
+  {k:'블랙페퍼',e:'Black Pepper',l:0,f:['스파이시'],t:['냉소적인','위험한','성실한'],s:['가을','겨울'],w:1,p:4,a:['프레시 스파이시','우디']},
+  {k:'진저',e:'Ginger',l:0,f:['스파이시'],t:['열정적인','성실한','자유로운'],s:['가을','겨울'],w:2,p:3,a:['프레시 스파이시','아로마틱']},
+  {k:'카다멈',e:'Cardamom',l:0,f:['스파이시'],t:['신비로운','고고한','차분한'],s:['가을','겨울'],w:2,p:3,a:['프레시 스파이시','우디']},
+  {k:'넛맥',e:'Nutmeg',l:0,f:['스파이시'],t:['다정한','신비로운','성실한'],s:['가을','겨울'],w:2,p:3,a:['웜 스파이시','우디']},
+  {k:'스타아니스',e:'Star Anise',l:0,f:['스파이시'],t:['신비로운','위험한','장난기 많은'],s:['겨울'],w:2,p:4,a:['웜 스파이시','스위트']},
+  {k:'주니퍼베리',e:'Juniper Berry',l:0,f:['그린','스파이시'],t:['냉소적인','고고한','자유로운'],s:['가을','겨울'],w:0,p:3,a:['아로마틱','침엽수']},
+  {k:'바질',e:'Basil',l:0,f:['그린'],t:['성실한','차분한','고고한'],s:['봄','여름'],w:-1,p:3,a:['아로마틱','그린']},
+  {k:'민트',e:'Mint',l:0,f:['그린','아쿠아틱'],t:['냉소적인','자유로운','순수한'],s:['여름'],w:-2,p:3,a:['아로마틱','그린']},
+  {k:'유칼립투스',e:'Eucalyptus',l:0,f:['그린'],t:['냉소적인','성실한','순수한'],s:['여름','겨울'],w:-2,p:4,a:['아로마틱','침엽수']},
+  {k:'로즈마리',e:'Rosemary',l:0,f:['그린'],t:['성실한','고고한','차분한'],s:['봄','가을'],w:0,p:3,a:['아로마틱','침엽수']},
+  {k:'알데하이드',e:'Aldehyde',l:0,f:['파우더리'],t:['고고한','신비로운','우울한'],s:['가을','겨울'],w:0,p:4,a:['알데하이드','파우더리']},
+  {k:'씨솔트',e:'Sea Salt',l:0,f:['아쿠아틱'],t:['자유로운','우울한','차분한'],s:['여름'],w:-2,p:2,a:['아쿠아틱','머스키']},
+  {k:'마린노트',e:'Marine Notes',l:0,f:['아쿠아틱'],t:['자유로운','순수한','차분한'],s:['여름'],w:-2,p:3,a:['아쿠아틱']},
+  {k:'그린애플',e:'Green Apple',l:0,f:['그린'],t:['장난기 많은','순수한','자유로운'],s:['봄','여름'],w:-1,p:2,a:['프루티','그린']},
+  {k:'페어',e:'Pear',l:0,f:['그린'],t:['순수한','다정한','장난기 많은'],s:['봄'],w:0,p:2,a:['프루티','스위트']},
+  {k:'복숭아',e:'Peach',l:0,f:['구르망'],t:['다정한','순수한','장난기 많은'],s:['봄','여름'],w:1,p:3,a:['프루티','스위트']},
+  {k:'라즈베리',e:'Raspberry',l:0,f:['구르망'],t:['장난기 많은','다정한','열정적인'],s:['봄','겨울'],w:1,p:3,a:['프루티','스위트']},
+  {k:'블랙커런트',e:'Blackcurrant',l:0,f:['그린','플로럴'],t:['냉소적인','위험한','신비로운'],s:['봄','가을'],w:0,p:3,a:['프루티','그린']},
+  {k:'파인애플',e:'Pineapple',l:0,f:['구르망'],t:['열정적인','자유로운','장난기 많은'],s:['여름'],w:1,p:3,a:['프루티','스위트']},
+  {k:'리치',e:'Lychee',l:0,f:['플로럴','구르망'],t:['순수한','다정한','신비로운'],s:['봄','여름'],w:0,p:2,a:['프루티','로지']},
+
+  // ── 미들 노트 ───────────────────────────────────────────
+  {k:'로즈',e:'Rose',l:1,f:['플로럴'],t:['열정적인','고고한','다정한'],s:['봄','가을'],w:1,p:4,a:['로지','화이트 플로럴']},
+  {k:'다마스크로즈',e:'Damask Rose',l:1,f:['플로럴'],t:['고고한','신비로운','열정적인'],s:['가을','겨울'],w:1,p:5,a:['로지','발사믹']},
+  {k:'자스민',e:'Jasmine',l:1,f:['플로럴'],t:['위험한','열정적인','신비로운'],s:['여름','가을'],w:1,p:4,a:['화이트 플로럴','애니멀릭']},
+  {k:'튜베로즈',e:'Tuberose',l:1,f:['플로럴'],t:['위험한','열정적인','고고한'],s:['여름'],w:1,p:5,a:['화이트 플로럴','스위트']},
+  {k:'오렌지블로섬',e:'Orange Blossom',l:1,f:['플로럴'],t:['순수한','다정한','자유로운'],s:['봄','여름'],w:1,p:3,a:['화이트 플로럴','시트러스']},
+  {k:'네롤리',e:'Neroli',l:1,f:['플로럴','시트러스'],t:['순수한','차분한','다정한'],s:['봄','여름'],w:0,p:3,a:['화이트 플로럴','시트러스']},
+  {k:'일랑일랑',e:'Ylang-Ylang',l:1,f:['플로럴'],t:['위험한','신비로운','열정적인'],s:['여름'],w:2,p:4,a:['화이트 플로럴','스위트']},
+  {k:'가드니아',e:'Gardenia',l:1,f:['플로럴'],t:['고고한','다정한','신비로운'],s:['여름'],w:1,p:4,a:['화이트 플로럴','파우더리']},
+  {k:'프리지아',e:'Freesia',l:1,f:['플로럴'],t:['순수한','장난기 많은','다정한'],s:['봄'],w:0,p:2,a:['화이트 플로럴','그린']},
+  {k:'피오니',e:'Peony',l:1,f:['플로럴'],t:['다정한','순수한','장난기 많은'],s:['봄'],w:0,p:3,a:['로지','프루티']},
+  {k:'마그놀리아',e:'Magnolia',l:1,f:['플로럴'],t:['고고한','차분한','순수한'],s:['봄','여름'],w:0,p:3,a:['화이트 플로럴','시트러스']},
+  {k:'오스만투스',e:'Osmanthus',l:1,f:['플로럴'],t:['신비로운','다정한','우울한'],s:['가을'],w:1,p:3,a:['프루티','레더']},
+  {k:'미모사',e:'Mimosa',l:1,f:['플로럴','파우더리'],t:['순수한','다정한','우울한'],s:['봄'],w:0,p:2,a:['파우더리','화이트 플로럴']},
+  {k:'헬리오트로프',e:'Heliotrope',l:1,f:['파우더리'],t:['다정한','우울한','순수한'],s:['겨울'],w:1,p:3,a:['파우더리','바닐라']},
+  {k:'바이올렛',e:'Violet',l:1,f:['파우더리','플로럴'],t:['우울한','순수한','고고한'],s:['봄'],w:0,p:2,a:['파우더리','로지']},
+  {k:'바이올렛리프',e:'Violet Leaf',l:1,f:['그린','플로럴'],t:['우울한','신비로운','냉소적인'],s:['봄','가을'],w:-2,p:3,a:['그린','어시']},
+  {k:'아이리스',e:'Orris',l:1,f:['파우더리','플로럴'],t:['고고한','우울한','차분한'],s:['가을','겨울'],w:-1,p:3,a:['파우더리','어시']},
+  {k:'라벤더',e:'Lavender',l:1,f:['플로럴','그린'],t:['차분한','성실한','우울한'],s:['봄','여름'],w:-1,p:3,a:['아로마틱','파우더리']},
+  {k:'제라늄',e:'Geranium',l:1,f:['플로럴','그린'],t:['성실한','차분한','냉소적인'],s:['봄','가을'],w:0,p:3,a:['로지','그린']},
+  {k:'클라리세이지',e:'Clary Sage',l:1,f:['그린'],t:['차분한','고고한','신비로운'],s:['가을'],w:0,p:3,a:['아로마틱','어시']},
+  {k:'카모마일',e:'Chamomile',l:1,f:['그린','플로럴'],t:['차분한','다정한','순수한'],s:['봄','가을'],w:0,p:2,a:['아로마틱','그린']},
+  {k:'코리앤더',e:'Coriander',l:1,f:['스파이시','그린'],t:['자유로운','성실한','장난기 많은'],s:['봄','가을'],w:1,p:3,a:['프레시 스파이시','아로마틱']},
+  {k:'시나몬',e:'Cinnamon',l:1,f:['스파이시'],t:['열정적인','위험한','다정한'],s:['겨울'],w:2,p:4,a:['웜 스파이시','스위트']},
+  {k:'클로브',e:'Clove',l:1,f:['스파이시'],t:['위험한','신비로운','성실한'],s:['겨울'],w:2,p:4,a:['웜 스파이시','스모키']},
+  {k:'사프란',e:'Saffron',l:1,f:['스파이시'],t:['신비로운','위험한','고고한'],s:['가을','겨울'],w:2,p:4,a:['웜 스파이시','레더']},
+  {k:'커민',e:'Cumin',l:1,f:['스파이시'],t:['위험한','자유로운','열정적인'],s:['가을'],w:2,p:5,a:['웜 스파이시','애니멀릭']},
+  {k:'홍차',e:'Black Tea',l:1,f:['그린','우디'],t:['차분한','성실한','고고한'],s:['가을','겨울'],w:0,p:3,a:['아로마틱','스모키']},
+  {k:'그린티',e:'Green Tea',l:1,f:['그린'],t:['차분한','순수한','고고한'],s:['봄','여름'],w:-1,p:2,a:['그린','아로마틱']},
+  {k:'무화과',e:'Fig',l:1,f:['그린'],t:['차분한','다정한','우울한'],s:['여름','가을'],w:0,p:3,a:['그린','프루티']},
+  {k:'로터스',e:'Lotus',l:1,f:['아쿠아틱','플로럴'],t:['순수한','신비로운','차분한'],s:['여름'],w:-2,p:2,a:['아쿠아틱','화이트 플로럴']},
+  {k:'밤부',e:'Bamboo',l:1,f:['그린','아쿠아틱'],t:['고고한','차분한','성실한'],s:['여름'],w:-1,p:2,a:['그린','아쿠아틱']},
+  {k:'헤이',e:'Hay',l:1,f:['그린'],t:['우울한','차분한','자유로운'],s:['가을'],w:1,p:3,a:['어시','스위트']},
+
+  // ── 베이스 노트 ─────────────────────────────────────────
+  {k:'샌달우드',e:'Sandalwood',l:2,f:['우디'],t:['차분한','다정한','성실한'],s:['가을','겨울'],w:1,p:3,a:['우디','머스키']},
+  {k:'시더우드',e:'Cedarwood',l:2,f:['우디'],t:['성실한','고고한','냉소적인'],s:['가을','겨울'],w:0,p:3,a:['우디','침엽수']},
+  {k:'아가우드',e:'Oud',l:2,f:['우디','인센스'],t:['위험한','신비로운','고고한'],s:['겨울'],w:2,p:5,a:['우디','애니멀릭','스모키']},
+  {k:'패츌리',e:'Patchouli',l:2,f:['우디'],t:['위험한','자유로운','신비로운'],s:['가을','겨울'],w:1,p:4,a:['우디','어시']},
+  {k:'베티버',e:'Vetiver',l:2,f:['우디','그린'],t:['냉소적인','고고한','우울한'],s:['가을'],w:0,p:4,a:['어시','우디']},
+  {k:'오크모스',e:'Oakmoss',l:2,f:['그린','우디'],t:['우울한','신비로운','고고한'],s:['가을'],w:0,p:4,a:['어시','그린']},
+  {k:'파인',e:'Pine',l:2,f:['그린','우디'],t:['자유로운','성실한','차분한'],s:['겨울'],w:0,p:3,a:['침엽수','아로마틱']},
+  {k:'사이프러스',e:'Cypress',l:2,f:['그린','우디'],t:['고고한','차분한','우울한'],s:['가을','겨울'],w:-1,p:3,a:['침엽수','우디']},
+  {k:'자작나무',e:'Birch Tar',l:2,f:['레더','우디'],t:['위험한','냉소적인','고고한'],s:['가을','겨울'],w:1,p:5,a:['스모키','레더']},
+  {k:'팔로산토',e:'Palo Santo',l:2,f:['우디','인센스'],t:['신비로운','차분한','고고한'],s:['가을','겨울'],w:1,p:4,a:['스모키','우디']},
+  {k:'화이트머스크',e:'White Musk',l:2,f:['머스크'],t:['순수한','다정한','차분한'],s:['봄','여름'],w:0,p:2,a:['머스키','파우더리']},
+  {k:'앰브레트',e:'Ambrette',l:2,f:['머스크'],t:['다정한','차분한','순수한'],s:['봄','가을'],w:1,p:3,a:['머스키','파우더리']},
+  {k:'앰브록산',e:'Ambroxan',l:2,f:['머스크','앰버'],t:['자유로운','열정적인','신비로운'],s:['가을','겨울'],w:1,p:5,a:['앰버','머스키']},
+  {k:'앰버',e:'Amber',l:2,f:['앰버'],t:['다정한','열정적인','신비로운'],s:['가을','겨울'],w:2,p:4,a:['앰버','발사믹']},
+  {k:'앰버그리스',e:'Ambergris',l:2,f:['앰버','머스크'],t:['신비로운','고고한','자유로운'],s:['가을','겨울'],w:1,p:4,a:['앰버','애니멀릭']},
+  {k:'라브다넘',e:'Labdanum',l:2,f:['앰버'],t:['위험한','신비로운','열정적인'],s:['겨울'],w:2,p:4,a:['앰버','발사믹','레더']},
+  {k:'벤조인',e:'Benzoin',l:2,f:['앰버','인센스'],t:['차분한','우울한','신비로운'],s:['겨울'],w:2,p:3,a:['발사믹','바닐라']},
+  {k:'미르',e:'Myrrh',l:2,f:['인센스','앰버'],t:['신비로운','우울한','고고한'],s:['겨울'],w:1,p:4,a:['발사믹','인센스']},
+  {k:'인센스',e:'Incense',l:2,f:['인센스'],t:['신비로운','고고한','우울한'],s:['겨울'],w:0,p:4,a:['인센스','스모키']},
+  {k:'통카빈',e:'Tonka Bean',l:2,f:['구르망','앰버'],t:['다정한','차분한','우울한'],s:['가을','겨울'],w:2,p:3,a:['바닐라','스위트']},
+  {k:'바닐라',e:'Vanilla',l:2,f:['구르망','앰버'],t:['다정한','순수한','열정적인'],s:['겨울'],w:2,p:4,a:['바닐라','스위트']},
+  {k:'코코아',e:'Cocoa',l:2,f:['구르망'],t:['다정한','우울한','장난기 많은'],s:['겨울'],w:2,p:3,a:['구르망','스위트']},
+  {k:'커피',e:'Coffee',l:2,f:['구르망'],t:['열정적인','냉소적인','성실한'],s:['가을','겨울'],w:2,p:4,a:['구르망','스모키']},
+  {k:'캐러멜',e:'Caramel',l:2,f:['구르망'],t:['다정한','장난기 많은','순수한'],s:['겨울'],w:2,p:3,a:['구르망','스위트']},
+  {k:'프랄린',e:'Praline',l:2,f:['구르망'],t:['장난기 많은','다정한','열정적인'],s:['겨울'],w:2,p:4,a:['구르망','바닐라']},
+  {k:'아몬드',e:'Almond',l:2,f:['구르망','파우더리'],t:['순수한','우울한','다정한'],s:['가을','겨울'],w:1,p:3,a:['구르망','파우더리']},
+  {k:'코코넛',e:'Coconut',l:2,f:['구르망','아쿠아틱'],t:['자유로운','다정한','장난기 많은'],s:['여름'],w:1,p:3,a:['구르망','스위트']},
+  {k:'허니',e:'Honey',l:2,f:['구르망','앰버'],t:['다정한','위험한','열정적인'],s:['가을','겨울'],w:2,p:4,a:['스위트','애니멀릭']},
+  {k:'럼',e:'Rum',l:2,f:['구르망','스파이시'],t:['자유로운','위험한','열정적인'],s:['겨울'],w:2,p:4,a:['구르망','발사믹']},
+  {k:'코냑',e:'Cognac',l:2,f:['구르망','레더'],t:['고고한','위험한','신비로운'],s:['겨울'],w:2,p:4,a:['구르망','레더']},
+  {k:'타바코',e:'Tobacco',l:2,f:['레더','구르망'],t:['냉소적인','위험한','우울한'],s:['가을','겨울'],w:2,p:4,a:['스모키','스위트']},
+  {k:'레더',e:'Leather',l:2,f:['레더'],t:['위험한','냉소적인','고고한'],s:['가을','겨울'],w:1,p:5,a:['레더','애니멀릭']},
+  {k:'스웨이드',e:'Suede',l:2,f:['레더','파우더리'],t:['고고한','차분한','신비로운'],s:['가을','겨울'],w:1,p:3,a:['레더','파우더리']},
+  {k:'파피루스',e:'Papyrus',l:2,f:['우디','인센스'],t:['우울한','고고한','냉소적인'],s:['가을'],w:0,p:3,a:['스모키','어시']},
+
+  // ── 추가 향료 ─────────────────────────────────────────
+  {k:'레몬버베나',e:'Lemon Verbena',l:0,f:['시트러스','그린'],t:['순수한','자유로운','차분한'],s:['봄','여름'],w:-1,p:2,a:['시트러스','아로마틱']},
+  {k:'레몬그라스',e:'Lemongrass',l:0,f:['시트러스','그린'],t:['자유로운','성실한','장난기 많은'],s:['여름'],w:-1,p:3,a:['시트러스','그린']},
+  {k:'살구',e:'Apricot',l:0,f:['구르망'],t:['다정한','순수한','열정적인'],s:['봄','가을'],w:1,p:3,a:['프루티','스위트']},
+  {k:'멜론',e:'Melon',l:0,f:['아쿠아틱','구르망'],t:['순수한','장난기 많은','자유로운'],s:['여름'],w:-1,p:2,a:['프루티','아쿠아틱']},
+  {k:'갈바넘',e:'Galbanum',l:0,f:['그린'],t:['냉소적인','고고한','신비로운'],s:['봄'],w:-2,p:4,a:['그린','어시']},
+  {k:'엘레미',e:'Elemi',l:0,f:['인센스','시트러스'],t:['신비로운','차분한','고고한'],s:['가을','겨울'],w:1,p:3,a:['인센스','시트러스']},
+  {k:'은방울꽃',e:'Lily of the Valley',l:1,f:['플로럴'],t:['순수한','다정한','고고한'],s:['봄'],w:0,p:3,a:['화이트 플로럴','그린']},
+  {k:'라일락',e:'Lilac',l:1,f:['플로럴','파우더리'],t:['우울한','순수한','다정한'],s:['봄'],w:0,p:3,a:['화이트 플로럴','파우더리']},
+  {k:'카네이션',e:'Carnation',l:1,f:['플로럴','스파이시'],t:['고고한','열정적인','신비로운'],s:['가을'],w:1,p:4,a:['웜 스파이시','로지']},
+  {k:'히아신스',e:'Hyacinth',l:1,f:['플로럴','그린'],t:['차분한','우울한','순수한'],s:['봄'],w:-1,p:3,a:['그린','화이트 플로럴']},
+  {k:'토마토리프',e:'Tomato Leaf',l:1,f:['그린'],t:['장난기 많은','자유로운','냉소적인'],s:['여름'],w:-1,p:4,a:['그린','어시']},
+  {k:'나르시스',e:'Narcissus',l:1,f:['플로럴'],t:['신비로운','우울한','고고한'],s:['봄','가을'],w:0,p:4,a:['화이트 플로럴','어시']},
+  {k:'캐시미어우드',e:'Cashmeran',l:2,f:['우디','머스크'],t:['다정한','차분한','성실한'],s:['가을','겨울'],w:1,p:4,a:['우디','머스키']},
+  {k:'스티락스',e:'Styrax',l:2,f:['앰버','레더'],t:['위험한','신비로운','열정적인'],s:['겨울'],w:2,p:4,a:['발사믹','레더']},
+  {k:'오포포낙스',e:'Opoponax',l:2,f:['앰버','인센스'],t:['다정한','신비로운','우울한'],s:['겨울'],w:2,p:4,a:['발사믹','앰버']},
+  {k:'오크',e:'Oak',l:2,f:['우디','구르망'],t:['성실한','고고한','차분한'],s:['가을','겨울'],w:1,p:3,a:['우디','발사믹']},
+  {k:'헤이즐넛',e:'Hazelnut',l:2,f:['구르망'],t:['다정한','순수한','장난기 많은'],s:['가을','겨울'],w:2,p:3,a:['구르망','스위트']},
+  {k:'밀크',e:'Milk',l:2,f:['구르망','머스크'],t:['순수한','다정한','차분한'],s:['겨울'],w:1,p:2,a:['구르망','머스키']},
+
+  // ── 추가 향료 2차 ─────────────────────────────────────
+  {k:'블러드오렌지',e:'Blood Orange',l:0,f:['시트러스'],t:['열정적인','장난기 많은','다정한'],s:['봄','겨울'],w:1,p:3,a:['시트러스','프루티']},
+  {k:'무화과잎',e:'Fig Leaf',l:0,f:['그린'],t:['차분한','고고한','우울한'],s:['여름'],w:-1,p:3,a:['그린','어시']},
+  {k:'시소',e:'Shiso',l:0,f:['그린','스파이시'],t:['고고한','신비로운','냉소적인'],s:['여름','가을'],w:0,p:3,a:['그린','아로마틱']},
+  {k:'캐러웨이',e:'Caraway',l:0,f:['스파이시'],t:['성실한','장난기 많은','자유로운'],s:['가을'],w:1,p:3,a:['프레시 스파이시','아로마틱']},
+  {k:'칼론',e:'Calone',l:0,f:['아쿠아틱'],t:['순수한','자유로운','냉소적인'],s:['여름'],w:-2,p:4,a:['아쿠아틱']},
+  {k:'카시스버드',e:'Cassis Bud',l:0,f:['그린','플로럴'],t:['냉소적인','신비로운','고고한'],s:['봄'],w:-1,p:4,a:['그린','프루티']},
+  {k:'레드커런트',e:'Redcurrant',l:0,f:['구르망','그린'],t:['장난기 많은','열정적인','순수한'],s:['봄','여름'],w:0,p:2,a:['프루티']},
+  {k:'만다린잎',e:'Mandarin Leaf',l:0,f:['시트러스','그린'],t:['순수한','차분한','자유로운'],s:['봄','여름'],w:-1,p:2,a:['시트러스','그린']},
+  {k:'자스민삼박',e:'Jasmine Sambac',l:1,f:['플로럴'],t:['위험한','열정적인','신비로운'],s:['여름'],w:1,p:5,a:['화이트 플로럴','애니멀릭']},
+  {k:'센티폴리아로즈',e:'Rose de Mai',l:1,f:['플로럴'],t:['고고한','다정한','순수한'],s:['봄'],w:0,p:4,a:['로지','화이트 플로럴']},
+  {k:'인동',e:'Honeysuckle',l:1,f:['플로럴'],t:['다정한','순수한','장난기 많은'],s:['봄','여름'],w:1,p:3,a:['화이트 플로럴','스위트']},
+  {k:'스위트피',e:'Sweet Pea',l:1,f:['플로럴'],t:['순수한','장난기 많은','다정한'],s:['봄'],w:0,p:2,a:['화이트 플로럴','그린']},
+  {k:'타임',e:'Thyme',l:1,f:['그린','스파이시'],t:['성실한','냉소적인','고고한'],s:['가을'],w:0,p:3,a:['아로마틱','그린']},
+  {k:'우롱차',e:'Oolong Tea',l:1,f:['그린','우디'],t:['차분한','고고한','신비로운'],s:['가을','겨울'],w:0,p:3,a:['아로마틱','스모키']},
+  {k:'워터릴리',e:'Water Lily',l:1,f:['아쿠아틱','플로럴'],t:['순수한','차분한','우울한'],s:['여름'],w:-2,p:2,a:['아쿠아틱','화이트 플로럴']},
+  {k:'카스토리움',e:'Castoreum',l:2,f:['레더','머스크'],t:['위험한','신비로운','열정적인'],s:['겨울'],w:2,p:5,a:['애니멀릭','레더']},
+  {k:'이소이슈퍼',e:'Iso E Super',l:2,f:['우디','머스크'],t:['차분한','고고한','자유로운'],s:['가을','겨울'],w:0,p:3,a:['우디','머스키']},
+  {k:'마시멜로',e:'Marshmallow',l:2,f:['구르망'],t:['다정한','순수한','장난기 많은'],s:['겨울'],w:2,p:3,a:['구르망','스위트']},
+  {k:'사이프리올',e:'Cypriol',l:2,f:['우디','인센스'],t:['신비로운','위험한','우울한'],s:['가을','겨울'],w:1,p:4,a:['스모키','어시']},
+  {k:'구아이악우드',e:'Guaiac Wood',l:2,f:['우디','인센스'],t:['냉소적인','고고한','차분한'],s:['가을','겨울'],w:1,p:4,a:['우디','스모키']}
+];
+
+/* ---------- 시판 향수 사전 (유사도 비교용) ---------- */
+const PERFUMES = [
+  {b:'Chanel',n:'No.5',y:'1921',f:'알데하이드 플로럴',tags:['알데하이드','일랑일랑','로즈','자스민','샌달우드','바닐라','파우더리']},
+  {b:'Chanel',n:'Bleu de Chanel',y:'2010',f:'우디 아로마틱',tags:['베르가못','자몽','인센스','진저','샌달우드','시더우드','우디']},
+  {b:'Chanel',n:'Coco Mademoiselle',y:'2001',f:'앰버 플로럴',tags:['만다린','로즈','자스민','패츌리','바닐라','플로럴']},
+  {b:'Chanel',n:'No.19 Poudré',y:'2011',f:'파우더리 플로럴',tags:['아이리스','화이트머스크','제라늄','바이올렛리프','파우더리']},
+  {b:'Chanel',n:'Chance Eau Tendre',y:'2010',f:'프루티 플로럴',tags:['자몽','리치','자스민','화이트머스크','시더우드']},
+  {b:'Dior',n:'Sauvage',y:'2015',f:'프레시 스파이시',tags:['베르가못','핑크페퍼','앰브록산','라벤더','시더우드']},
+  {b:'Dior',n:"J'adore",y:'1999',f:'플로럴 부케',tags:['일랑일랑','로즈','자스민','만다린','마그놀리아']},
+  {b:'Dior',n:'Dior Homme',y:'2005',f:'우디 파우더리',tags:['아이리스','라벤더','코코아','베티버','스웨이드']},
+  {b:'Tom Ford',n:'Tobacco Vanille',y:'2007',f:'구르망 스파이시',tags:['타바코','바닐라','코코아','통카빈','시나몬']},
+  {b:'Tom Ford',n:'Oud Wood',y:'2007',f:'우디',tags:['아가우드','샌달우드','카다멈','시더우드','바닐라']},
+  {b:'Tom Ford',n:'Lost Cherry',y:'2018',f:'구르망 프루티',tags:['라즈베리','통카빈','바닐라','자스민','아몬드']},
+  {b:'Tom Ford',n:'Black Orchid',y:'2006',f:'앰버 플로럴',tags:['블랙커런트','패츌리','바닐라','코코아','인센스']},
+  {b:'Le Labo',n:'Santal 33',y:'2011',f:'우디 레더',tags:['샌달우드','아이리스','바이올렛리프','레더','카다멈','시더우드']},
+  {b:'Le Labo',n:'Another 13',y:'2010',f:'머스키 앰버',tags:['앰브록산','화이트머스크','자스민','머스크']},
+  {b:'Le Labo',n:'Rose 31',y:'2006',f:'우디 로즈',tags:['로즈','커민','시더우드','베티버','우디']},
+  {b:'Maison Margiela',n:'Replica Jazz Club',y:'2013',f:'우디 스파이시',tags:['타바코','바닐라','레몬','통카빈','럼','레더']},
+  {b:'Maison Margiela',n:'Replica By the Fireplace',y:'2015',f:'우디 구르망',tags:['바닐라','인센스','시더우드','통카빈','클로브']},
+  {b:'Maison Margiela',n:'Replica Lazy Sunday Morning',y:'2012',f:'화이트 플로럴 머스크',tags:['화이트머스크','아이리스','페어','로즈','머스크']},
+  {b:'Maison Margiela',n:'Replica Beach Walk',y:'2012',f:'아쿠아틱 플로럴',tags:['씨솔트','코코넛','화이트머스크','베르가못','마린노트']},
+  {b:'Byredo',n:'Gypsy Water',y:'2008',f:'우디 아로마틱',tags:['베르가못','인센스','바닐라','샌달우드','파인','주니퍼베리']},
+  {b:'Byredo',n:'Blanche',y:'2009',f:'화이트 머스크',tags:['알데하이드','로즈','화이트머스크','샌달우드','파우더리']},
+  {b:'Byredo',n:"Bal d'Afrique",y:'2009',f:'우디 플로럴',tags:['베르가못','바이올렛','베티버','시더우드','화이트머스크']},
+  {b:'Byredo',n:'Mojave Ghost',y:'2014',f:'우디 플로럴',tags:['마그놀리아','샌달우드','앰브레트','바이올렛','패츌리']},
+  {b:'Diptyque',n:'Philosykos',y:'1996',f:'그린 우디',tags:['무화과','그린애플','시더우드','코코넛','그린']},
+  {b:'Diptyque',n:'Do Son',y:'2005',f:'화이트 플로럴',tags:['튜베로즈','오렌지블로섬','화이트머스크','로즈']},
+  {b:'Diptyque',n:'Tam Dao',y:'2003',f:'우디',tags:['샌달우드','시더우드','앰버','사이프러스','우디']},
+  {b:'Jo Malone London',n:'Wood Sage & Sea Salt',y:'2014',f:'아쿠아틱 우디',tags:['씨솔트','클라리세이지','자몽','시더우드','마린노트']},
+  {b:'Jo Malone London',n:'English Pear & Freesia',y:'2010',f:'프루티 플로럴',tags:['페어','프리지아','패츌리','화이트머스크']},
+  {b:'Jo Malone London',n:'Peony & Blush Suede',y:'2013',f:'플로럴 프루티',tags:['피오니','그린애플','스웨이드','화이트머스크','로즈']},
+  {b:'Guerlain',n:'Shalimar',y:'1925',f:'앰버 오리엔탈',tags:['베르가못','아이리스','바닐라','인센스','레더','앰버']},
+  {b:'Frédéric Malle',n:'Portrait of a Lady',y:'2010',f:'로즈 패츌리',tags:['로즈','패츌리','인센스','라즈베리','샌달우드','클로브']},
+  {b:'Frédéric Malle',n:'Musc Ravageur',y:'2000',f:'머스키 앰버',tags:['바닐라','화이트머스크','시나몬','라벤더','앰버']},
+  {b:'Frédéric Malle',n:'Iris Poudre',y:'2000',f:'파우더리 플로럴',tags:['알데하이드','아이리스','바닐라','화이트머스크','파우더리']},
+  {b:'Frédéric Malle',n:'Carnal Flower',y:'2005',f:'화이트 플로럴',tags:['튜베로즈','코코넛','유칼립투스','화이트머스크','자스민']},
+  {b:'Serge Lutens',n:'Féminité du Bois',y:'1992',f:'우디 스파이시',tags:['시더우드','시나몬','샌달우드','클로브','복숭아']},
+  {b:'Serge Lutens',n:'Ambre Sultan',y:'1993',f:'앰버 스파이시',tags:['앰버','인센스','라브다넘','바닐라','코리앤더']},
+  {b:'Aesop',n:'Hwyl',y:'2017',f:'우디 인센스',tags:['인센스','베티버','시더우드','사이프러스','우디']},
+  {b:'Prada',n:"Infusion d'Iris",y:'2007',f:'파우더리 플로럴',tags:['아이리스','만다린','시더우드','벤조인','파우더리']},
+  {b:'Hermès',n:'Un Jardin sur le Nil',y:'2005',f:'그린 프루티',tags:['그린애플','로터스','인센스','마그놀리아','그린']},
+  {b:'Hermès',n:"Terre d'Hermès",y:'2006',f:'우디 시트러스',tags:['자몽','스위트오렌지','블랙페퍼','베티버','시더우드']},
+  {b:'Creed',n:'Aventus',y:'2010',f:'프루티 샤이프레',tags:['파인애플','블랙커런트','자작나무','패츌리','앰버그리스']},
+  {b:'Acqua di Parma',n:'Colonia',y:'1916',f:'시트러스 아로마틱',tags:['레몬','베르가못','라벤더','베티버','로즈마리']},
+  {b:'Kilian',n:"Angels' Share",y:'2020',f:'구르망 우디',tags:['코냑','시나몬','통카빈','바닐라','프랄린']},
+  {b:'Kilian',n:'Black Phantom',y:'2017',f:'구르망',tags:['럼','커피','캐러멜','샌달우드','코코아']},
+  {b:'Maison Francis Kurkdjian',n:'Baccarat Rouge 540',y:'2015',f:'앰버 플로럴',tags:['사프란','자스민','앰버','시더우드','앰브록산']},
+  {b:'Yves Saint Laurent',n:'Libre',y:'2019',f:'플로럴 라벤더',tags:['라벤더','오렌지블로섬','바닐라','만다린','머스크']},
+  {b:'Yves Saint Laurent',n:'Black Opium',y:'2014',f:'구르망 플로럴',tags:['커피','바닐라','핑크페퍼','자스민','패츌리']},
+  {b:'Lancôme',n:'La Vie Est Belle',y:'2012',f:'구르망 플로럴',tags:['아이리스','패츌리','통카빈','프랄린','블랙커런트']},
+  {b:'Viktor&Rolf',n:'Flowerbomb',y:'2005',f:'플로럴 구르망',tags:['자스민','오렌지블로섬','패츌리','로즈','프리지아']},
+  {b:'Mugler',n:'Angel',y:'1992',f:'구르망',tags:['패츌리','바닐라','코코아','캐러멜','복숭아']},
+  {b:'Giorgio Armani',n:'Acqua di Giò',y:'1996',f:'아쿠아틱',tags:['베르가못','마린노트','자스민','로즈마리','패츌리']},
+  {b:'Calvin Klein',n:'CK One',y:'1994',f:'시트러스 아로마틱',tags:['레몬','파인애플','그린티','화이트머스크','넛맥']},
+  {b:'Issey Miyake',n:"L'Eau d'Issey",y:'1992',f:'아쿠아틱 플로럴',tags:['로터스','프리지아','시더우드','마린노트','피오니']},
+  {b:'Comme des Garçons',n:'Avignon',y:'2002',f:'인센스',tags:['인센스','카모마일','시더우드','미르','팔로산토']},
+  {b:'Nasomatto',n:'Black Afgano',y:'2009',f:'우디 인센스',tags:['아가우드','커피','인센스','패츌리','스모키']},
+  {b:'Amouage',n:'Interlude Man',y:'2012',f:'우디 스파이시',tags:['인센스','라브다넘','레더','앰버','미르']},
+  {b:'Kenzo',n:'Flower',y:'2000',f:'파우더리 플로럴',tags:['바이올렛','로즈','바닐라','화이트머스크','파우더리']},
+
+  {b:'Guerlain',n:'Jicky',y:'1889',f:'아로마틱 앰버',tags:['라벤더','베르가못','바닐라','통카빈','앰버']},
+  {b:'Guerlain',n:"L'Heure Bleue",y:'1912',f:'파우더리 앰버',tags:['스타아니스','아이리스','바닐라','헬리오트로프','카네이션']},
+  {b:'Chanel',n:'Coromandel',y:'2007',f:'우디 앰버',tags:['패츌리','벤조인','코코아','인센스','화이트머스크']},
+  {b:'Chanel',n:'Sycomore',y:'2008',f:'우디 인센스',tags:['베티버','인센스','샌달우드','사이프러스','시더우드']},
+  {b:'Chanel',n:'Cuir de Russie',y:'1927',f:'레더 플로럴',tags:['레더','아이리스','자작나무','자스민','일랑일랑']},
+  {b:'Dior',n:'Fahrenheit',y:'1988',f:'레더 그린',tags:['바이올렛리프','레더','만다린','넛맥','히아신스']},
+  {b:'Dior',n:'Poison',y:'1985',f:'앰버 플로럴',tags:['튜베로즈','오포포낙스','코리앤더','허니','시나몬']},
+  {b:'Mugler',n:'Alien',y:'2005',f:'앰버 플로럴',tags:['자스민','캐시미어우드','앰버','오크']},
+  {b:'Hermès',n:'Eau des Merveilles',y:'2004',f:'우디 앰버',tags:['앰버그리스','오크','블랙페퍼','스위트오렌지','베티버']},
+  {b:'Jo Malone London',n:'Lime Basil & Mandarin',y:'1999',f:'시트러스 아로마틱',tags:['라임','바질','만다린','패츌리']},
+  {b:'Jo Malone London',n:'Blackberry & Bay',y:'2012',f:'프루티 그린',tags:['블랙커런트','시더우드','갈바넘','화이트머스크']},
+  {b:'Byredo',n:"Rose of No Man's Land",y:'2015',f:'로즈 우디',tags:['로즈','라즈베리','앰브레트','파피루스','핑크페퍼']},
+  {b:'Le Labo',n:'Bergamote 22',y:'2006',f:'시트러스 우디',tags:['베르가못','자몽','자스민','베티버','앰브록산']},
+  {b:'Diptyque',n:"L'Ombre dans l'Eau",y:'1983',f:'그린 로즈',tags:['블랙커런트','로즈','갈바넘','토마토리프']},
+  {b:'Diptyque',n:'Eau Duelle',y:'2010',f:'바닐라 인센스',tags:['바닐라','인센스','카다멈','사이프러스','엘레미']},
+  {b:'Serge Lutens',n:'Chergui',y:'2005',f:'타바코 앰버',tags:['타바코','허니','앰버','헤이','아이리스']},
+  {b:'Serge Lutens',n:'Un Bois Vanille',y:'2003',f:'구르망 우디',tags:['바닐라','샌달우드','코코넛','통카빈','헤이즐넛']},
+  {b:'Maison Francis Kurkdjian',n:'Aqua Universalis',y:'2009',f:'시트러스 머스크',tags:['베르가못','레몬','화이트머스크','은방울꽃','자스민']},
+  {b:'Maison Francis Kurkdjian',n:'Grand Soir',y:'2016',f:'앰버 바닐라',tags:['앰버','바닐라','벤조인','통카빈','라브다넘']},
+  {b:'Tom Ford',n:'Neroli Portofino',y:'2011',f:'시트러스 플로럴',tags:['네롤리','베르가못','라벤더','앰브레트','오렌지블로섬']},
+  {b:'Tom Ford',n:'Soleil Blanc',y:'2016',f:'앰버 플로럴',tags:['코코넛','카다멈','튜베로즈','앰버','살구']},
+  {b:"Penhaligon's",n:'Halfeti',y:'2015',f:'우디 스파이시',tags:['사프란','로즈','아가우드','레더','시더우드']},
+  {b:'Amouage',n:'Reflection Man',y:'2007',f:'플로럴 우디',tags:['로즈마리','네롤리','자스민','샌달우드','은방울꽃']},
+  {b:'Acqua di Parma',n:'Fico di Amalfi',y:'2011',f:'그린 시트러스',tags:['무화과','베르가못','시더우드','레몬']},
+  {b:'Comme des Garçons',n:'Wonderwood',y:'2010',f:'우디',tags:['샌달우드','시더우드','아가우드','베티버','넛맥']},
+  {b:'Aesop',n:'Tacit',y:'2015',f:'시트러스 그린',tags:['바질','유자','베티버','레몬버베나']},
+  {b:'Yves Saint Laurent',n:'Opium',y:'1977',f:'스파이시 앰버',tags:['클로브','미르','패츌리','바닐라','만다린']},
+
+  {b:'Chanel',n:'Chance',y:'2003',f:'프루티 플로럴',tags:['핑크페퍼','자스민','패츌리','바닐라','아이리스']},
+  {b:'Chanel',n:'Égoïste',y:'1990',f:'우디 스파이시',tags:['샌달우드','시나몬','바닐라','코리앤더','로즈']},
+  {b:'Dior',n:'Miss Dior',y:'2017',f:'플로럴',tags:['로즈','자스민','핑크페퍼','패츌리','블러드오렌지']},
+  {b:'Dior',n:'Hypnotic Poison',y:'1998',f:'구르망 앰버',tags:['아몬드','바닐라','자스민','캐러웨이','샌달우드']},
+  {b:'Guerlain',n:'Mitsouko',y:'1919',f:'프루티 샤이프레',tags:['복숭아','오크모스','자스민','시나몬','베티버']},
+  {b:'Guerlain',n:'Herba Fresca',y:'1999',f:'그린 시트러스',tags:['민트','레몬','그린티','화이트머스크']},
+  {b:'Hermès',n:'Un Jardin après la Mousson',y:'2008',f:'그린 스파이시',tags:['진저','카다멈','멜론','바이올렛리프']},
+  {b:'Hermès',n:'Kelly Calèche',y:'2007',f:'레더 플로럴',tags:['로즈','아이리스','레더','미모사','스위트피']},
+  {b:'Byredo',n:'Super Cedar',y:'2016',f:'우디',tags:['시더우드','로즈','화이트머스크','베티버']},
+  {b:'Le Labo',n:'Ylang 49',y:'2011',f:'우디 플로럴',tags:['일랑일랑','패츌리','오크모스','가드니아','샌달우드']},
+  {b:'Le Labo',n:'Thé Noir 29',y:'2015',f:'우디 아로마틱',tags:['홍차','무화과','타바코','베티버','머스크']},
+  {b:'Diptyque',n:'Eau Rose',y:'2012',f:'로즈',tags:['로즈','리치','블랙커런트','화이트머스크','센티폴리아로즈']},
+  {b:'Maison Margiela',n:'Replica Under the Lemon Trees',y:'2020',f:'시트러스 그린',tags:['레몬','무화과잎','시더우드','페티그레인']},
+  {b:'Maison Margiela',n:'Replica When the Rain Stops',y:'2018',f:'플로럴 머스크',tags:['로즈','아이리스','화이트머스크','칼론']},
+  {b:'Jo Malone London',n:'Wild Bluebell',y:'2011',f:'화이트 플로럴',tags:['인동','화이트머스크','자스민','스위트피']},
+  {b:'Jo Malone London',n:'Nectarine Blossom & Honey',y:'2005',f:'프루티 플로럴',tags:['복숭아','허니','오스만투스','블랙커런트']},
+  {b:'Frédéric Malle',n:'Une Rose',y:'2003',f:'로즈 앰버',tags:['로즈','앰버','패츌리','벤조인']},
+  {b:'Serge Lutens',n:'La Fille de Berlin',y:'2013',f:'로즈 스파이시',tags:['로즈','블랙페퍼','허니','머스크']},
+  {b:'Tom Ford',n:'Bitter Peach',y:'2020',f:'구르망 프루티',tags:['복숭아','카다멈','럼','바닐라','통카빈']},
+  {b:'Tom Ford',n:'Tuscan Leather',y:'2007',f:'레더',tags:['레더','라즈베리','사프란','자작나무','타임']},
+  {b:'Creed',n:'Silver Mountain Water',y:'1995',f:'그린 시트러스',tags:['베르가못','그린티','블랙커런트','화이트머스크']},
+  {b:'Maison Francis Kurkdjian',n:'Oud Satin Mood',y:'2015',f:'로즈 우디',tags:['로즈','아가우드','바닐라','벤조인','바이올렛']},
+  {b:'Amouage',n:'Jubilation XXV',y:'2007',f:'우디 인센스',tags:['인센스','블랙커런트','패츌리','미르','오크모스']},
+  {b:'Comme des Garçons',n:'Incense Kyoto',y:'2002',f:'인센스 우디',tags:['인센스','사이프러스','베티버','팔로산토']},
+  {b:'Xerjoff',n:'Naxos',y:'2015',f:'타바코 아로마틱',tags:['라벤더','허니','타바코','바닐라','통카빈']},
+  {b:'Aesop',n:'Rōzu',y:'2020',f:'로즈 우디',tags:['로즈','베티버','시더우드','이소이슈퍼']}
+];
+
+
+
+/* ---------- 향을 일상어로 적었을 때 알아듣는 사전 ----------
+   w: 찾을 표현 / f: 계열 / o: 바로 넣을 향료 / p: 세기 보정 */
+const WISH = [
+  {w:['비누','빨래','세제','섬유유연제','샴푸','린스','세탁','빨랫'], f:['머스크','파우더리'], o:['화이트머스크','알데하이드']},
+  {w:['깨끗','청결','산뜻','상쾌','청량','시원','맑은','투명','깔끔'], n:'깨끗한 향', f:['시트러스','아쿠아틱','머스크']},
+  {w:['담배','시가','연초','타바코'], f:['레더'], o:['타바코']},
+  {w:['가죽','레더','스웨이드'], f:['레더'], o:['레더']},
+  {w:['나무','우드','목재','삼나무','백단','샌달'], f:['우디'], o:['샌달우드','시더우드']},
+  {w:['장작','모닥불','나무 타','불 탄'], f:['우디','인센스'], o:['자작나무','팔로산토']},
+  {w:['달달','달콤','단내','단향','단맛','달지','스위트'], n:'단 향', f:['구르망'], o:['바닐라']},
+  {w:['바닐라'], f:['구르망'], o:['바닐라']},
+  {w:['초콜릿','코코아','카카오'], f:['구르망'], o:['코코아']},
+  {w:['커피','원두','에스프레소'], f:['구르망'], o:['커피']},
+  {w:['우유','밀크','요구르트','크림'], f:['구르망','머스크'], o:['밀크']},
+  {w:['아몬드','견과','헤이즐넛','넛향'], f:['구르망'], o:['아몬드','헤이즐넛']},
+  {w:['꿀','허니','벌꿀'], f:['구르망','앰버'], o:['허니']},
+  {w:['코코넛','열대','트로피컬'], f:['구르망','아쿠아틱'], o:['코코넛']},
+  {w:['꽃','플로럴','꽃향'], f:['플로럴']},
+  {w:['장미','로즈'], f:['플로럴'], o:['로즈']},
+  {w:['자스민','재스민'], f:['플로럴'], o:['자스민']},
+  {w:['아이리스','붓꽃'], f:['파우더리'], o:['아이리스']},
+  {w:['파우더','분내','분향','베이비파우더'], f:['파우더리'], o:['아이리스']},
+  {w:['과일','상큼','새콤','프루티','복숭아','베리'], f:['시트러스','구르망']},
+  {w:['시트러스','레몬','오렌지','자몽','귤','라임'], f:['시트러스']},
+  {w:['바다','바닷','해변','수영장','마린','물비린'], f:['아쿠아틱'], o:['씨솔트']},
+  {w:['비냄새','비 냄새','비 온','빗물'], f:['아쿠아틱','그린']},
+  {w:['풀냄새','풀 냄새','풀밭','잔디','그린','이파리','허브','나뭇잎','새싹'], f:['그린']},
+  {w:['흙','이끼','축축','젖은'], n:'흙 냄새', f:['우디','그린'], o:['베티버','오크모스']},
+  {w:['향신료','매콤','알싸','스파이시','후추','계피','생강'], f:['스파이시']},
+  {w:['향로','인센스','연기','스모키','향냄새','절간','절 냄새'], f:['인센스'], o:['인센스']},
+  {w:['머스크','살냄새','살결','체취','포근','따끈'], n:'살결 같은 향', f:['머스크']},
+  {w:['따뜻','아늑','온기','훈훈'], n:'따뜻한 향', f:['앰버','구르망']},
+  {w:['차갑','서늘','시린','쌀쌀'], n:'차가운 향', f:['아쿠아틱','인센스']},
+  {w:['책','종이','헌책','먼지','오래된'], f:['파우더리','우디'], o:['아이리스','시더우드']},
+  {w:['술집','술 냄새','음주','취기','위스키','와인','브랜디','코냑'], f:['구르망'], o:['럼','코냑']},
+  {w:['어른','섹시','관능','고혹','성숙'], n:'어른스러운 향', f:['앰버','레더']},
+  {w:['소년','소녀','풋풋','청춘','교복','싱그'], n:'풋풋한 향', f:['시트러스','그린']},
+  {w:['이국','오리엔탈','동양적'], f:['앰버','스파이시']},
+  {w:['병원','소독','약냄새'], f:['그린','아쿠아틱']},
+  {w:['무겁','묵직','진하','강하','센 향','진한'], f:[], p:1},
+  {w:['가볍','은은','옅','연하','약하','순한'], f:[], p:-1}
+];
+
+/* ---------- 설정 글에서 읽어낼 단서 ----------
+   w: 찾을 낱말 / f: 밀어줄 향 계열 / t: 밀어줄 성격 */
+const HINTS = [
+  {w:['바다','바닷','파도','해변','항구','인어','선원','등대','해안'], f:['아쿠아틱','머스크'], t:['자유로운']},
+  {w:['빗물','장마','소나기','빗속','호수','강가','안개','우산','연못','물가'], f:['아쿠아틱','그린'], t:['우울한']},
+  {w:['숲','나무','산속','목재','산장','수풀','정글','벌목'], f:['우디','그린']},
+  {w:['꽃','정원','화원','화병','꽃다발','플로리스트','원예','온실'], f:['플로럴']},
+  {w:['책','도서관','서재','서점','책방','헌책','종이','고서','기록','사서','논문'], f:['우디','파우더리'], t:['성실한']},
+  {w:['피아노','바이올린','악기','노래','음악','무대','연주','첼로','성악'], f:['파우더리','머스크'], t:['고고한']},
+  {w:['담배','시가','술집','주점','바텐더','위스키','와인','연초','흡연'], f:['레더','구르망'], t:['냉소적인']},
+  {w:['칼날','검을','검사','전투','기사','병사','전쟁','사냥','용병','군인','갑옷'], f:['레더','스파이시'], t:['위험한']},
+  {w:['성당','교회','기도','수도','제단','신전','사제','수녀','미사','예배'], f:['인센스'], t:['고고한']},
+  {w:['달빛','보름달','한밤','어둠','그림자','별빛','야행','자정','새벽녘'], f:['인센스','머스크'], t:['신비로운']},
+  {w:['햇살','아침','한낮','빛','여름날','양지','볕'], f:['시트러스'], t:['순수한']},
+  {w:['첫눈','눈밭','눈송이','폭설','겨울','얼음','서리','설원','빙하','한파'], f:['파우더리','우디'], t:['차분한']},
+  {w:['빵','과자','디저트','케이크','사탕','초콜릿','제과','쿠키','파티시에','베이커리','잼'], f:['구르망'], t:['다정한']},
+  {w:['고양이','강아지','짐승','수인','늑대','여우','사슴'], f:['머스크','우디'], t:['자유로운']},
+  {w:['유령','죽음','무덤','폐허','저주','망령','장례','묘지'], f:['인센스','파우더리'], t:['우울한']},
+  {w:['왕국','국왕','여왕','왕자','공주','귀족','드레스','궁정','황제','백작','영애','연회'], f:['플로럴','앰버'], t:['고고한']},
+  {w:['요리','부엌','주방','식당','셰프','조리'], f:['구르망','스파이시']},
+  {w:['기계','금속','로봇','공장','정비','엔진','강철','사이보그'], f:['레더','우디'], t:['냉소적인']},
+  {w:['약국','약사','병원','의사','실험','연구실','약초','간호','수술','독약'], f:['그린','아쿠아틱'], t:['성실한']},
+  {w:['홍차','다도','커피','카페','찻집','바리스타'], f:['그린','구르망'], t:['차분한']},
+  {w:['마법','마녀','주문','연금','부적','마도','마술','예언','점성'], f:['인센스','스파이시'], t:['신비로운']},
+  {w:['학교','교실','학생','제복','교복','대학','수업','동아리'], f:['시트러스','머스크'], t:['순수한']},
+  {w:['사막','모래','유목','오아시스'], f:['앰버','스파이시']},
+  {w:['가죽','장갑','부츠','안장','마차','승마','채찍'], f:['레더']},
+  {w:['향로','모닥불','불꽃','화롯불','촛불','난로','장작'], f:['인센스','스파이시']},
+  {w:['강호','무림','내공','협객','도사','주루','객잔','경공','검객'], f:['인센스','우디'], t:['자유로운']},
+  {w:['우주','행성','궤도','함선','합금','인공지능','안드로이드'], f:['아쿠아틱','레더'], t:['냉소적인']},
+  {w:['도시','골목','지하철','네온','빌딩','뒷골목'], f:['우디','레더']},
+  {w:['시골','논밭','흙길','농부','목장','들판','풀밭'], f:['그린','우디'], t:['성실한']},
+  {w:['여행','방랑','떠돌','기차','배낭','이방인','나그네'], f:['시트러스','우디'], t:['자유로운']},
+  {w:['어린','소꿉','인형','동화','유치원'], f:['파우더리','구르망'], t:['순수한']},
+  {w:['병약','창백','요양','불면','앓'], f:['파우더리','머스크'], t:['우울한']},
+  {w:['이불','침대','잠옷','포옹','체온'], f:['머스크'], t:['다정한']},
+  {w:['과수원','과일','딸기','포도','사과','복숭아'], f:['구르망','시트러스']},
+  {w:['그림','화가','물감','조각','아틀리에','전시','미술'], f:['그린','우디'], t:['고고한']},
+  {w:['춤','무용','발레','댄서'], f:['플로럴','머스크']},
+  {w:['소설','작가','편지','만년필','잉크','시인'], f:['파우더리','우디'], t:['우울한']},
+  {w:['시장','상인','행상','장터'], f:['스파이시','시트러스']}
+];
+
+
+/* ---------- 낱말 찾기 (부정 표현 인식) ---------- */
+const NEG_WORDS = ['싫','않','없','말고','빼','제외','별로','질색','피하','아니','금지','거부','안 '];
+function scanHits(text, dict){
+  const out = [];
+  dict.forEach(h => {
+    for(const w of h.w){
+      const i = text.indexOf(w);
+      if(i < 0) continue;
+      const tail = text.slice(i + w.length, i + w.length + 12);
+      out.push({ ...h, word:w, neg: NEG_WORDS.some(n => tail.includes(n)) });
+      break;
+    }
+  });
+  return out;
+}
+
+/* ---------- 조사 (받침에 따라 과/와, 이/가, 으로/로) ---------- */
+function jong(w){
+  const c = String(w).charCodeAt(String(w).length-1);
+  if(c < 0xAC00 || c > 0xD7A3) return -1;
+  return (c - 0xAC00) % 28;
+}
+function J(w, pair){
+  const [a,b] = pair.split('/');
+  const j = jong(w);
+  if(j < 0) return w + b;
+  if(pair === '으로/로') return w + (j === 0 || j === 8 ? b : a);
+  return w + (j === 0 ? b : a);
+}
+
+/* ---------- 난수 (같은 입력 = 같은 결과) ---------- */
+function hash(str){
+  let h = 2166136261;
+  for(let i=0;i<str.length;i++){ h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return h >>> 0;
+}
+function rng(seed){
+  let a = seed >>> 0;
+  return () => { a |= 0; a = a + 0x6D2B79F5 | 0;
+    let t = Math.imul(a ^ a>>>15, 1 | a);
+    t = t + Math.imul(t ^ t>>>7, 61 | t) ^ t;
+    return ((t ^ t>>>14) >>> 0) / 4294967296; };
+}
+
+/* ---------- 상징색 → 향 계열 ---------- */
+function colorToFamilies(hex){
+  if(!hex) return [];
+  const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  if(!m) return [];
+  const [r,g,b] = [1,2,3].map(i => parseInt(m[i],16)/255);
+  const mx = Math.max(r,g,b), mn = Math.min(r,g,b), d = mx-mn;
+  const l = (mx+mn)/2;
+  const s = d === 0 ? 0 : d/(1-Math.abs(2*l-1));
+  let h = 0;
+  if(d !== 0){
+    if(mx===r) h = 60*(((g-b)/d)%6);
+    else if(mx===g) h = 60*(((b-r)/d)+2);
+    else h = 60*(((r-g)/d)+4);
+  }
+  if(h<0) h += 360;
+  if(s < 0.14) return l < 0.28 ? ['레더','인센스','우디'] : l > 0.82 ? ['머스크','파우더리'] : ['머스크','우디','파우더리'];
+  if(l < 0.22) return ['레더','인센스','우디'];
+  if(h < 16 || h >= 345) return ['스파이시','레더','플로럴'];
+  if(h < 46) return ['앰버','구르망','시트러스'];
+  if(h < 68) return ['시트러스','그린'];
+  if(h < 160) return ['그린','우디'];
+  if(h < 200) return ['아쿠아틱','그린'];
+  if(h < 250) return ['아쿠아틱','머스크','인센스'];
+  if(h < 292) return ['플로럴','파우더리','인센스'];
+  return ['플로럴','파우더리','구르망'];
+}
+
+/* ---------- 층별 비율 ---------- */
+const SPLIT = {1:[34,38,28], 2:[31,38,31], 3:[28,37,35], 4:[25,36,39], 5:[22,34,44]};
+const SHARE = [0.45, 0.33, 0.22];
+
+/* ---------- 이름 짓기 ---------- */
+const ADJ = {
+  '차분한':['조용한','가라앉은','고요한','낮은','잔잔한','느린'],
+  '다정한':['따뜻한','다정한','포근한','부드러운','둥근','나긋한'],
+  '냉소적인':['식은','마른','서늘한','무심한','메마른','건조한'],
+  '열정적인':['타오르는','붉은','뜨거운','달아오른','들끓는','불붙은'],
+  '신비로운':['어스름한','흐린','깊은','아득한','수상한','비밀스러운'],
+  '장난기 많은':['들뜬','가벼운','장난스러운','까부는','통통 튀는','싱거운'],
+  '고고한':['꼿꼿한','창백한','정갈한','반듯한','단정한','곧은'],
+  '순수한':['맑은','투명한','어린','깨끗한','갓 씻은','티 없는'],
+  '위험한':['위태로운','날 선','어두운','아슬한','벼린','사나운'],
+  '우울한':['젖은','흐린','오래된','눅눅한','저문','가라앉은'],
+  '성실한':['단단한','곧은','묵묵한','한결같은','차곡한','꾸준한'],
+  '자유로운':['풀린','떠도는','열린','헐거운','흘러가는','거침없는']
+};
+const NOUN = {
+  '우디':['서재','오래된 숲','마른 목재','삼나무 그늘','책상 서랍','겨울 숲'],
+  '플로럴':['유리 화병','늦봄의 뜰','꽃다발','정원 산책','봄의 창','마른 꽃잎'],
+  '시트러스':['아침 창','과수원','첫 햇빛','유리잔','이른 산책','레몬 껍질'],
+  '머스크':['흰 이불','살결','오후의 볕','빈 셔츠','따뜻한 목덜미','아침 이불'],
+  '구르망':['설탕 눈','초콜릿 상자','달콤한 연기','오븐 앞','설탕 상자','오후의 간식'],
+  '아쿠아틱':['밀물','바다 안개','수면 위','젖은 돌','파도 끝','흐린 바다'],
+  '스파이시':['붉은 후추','불씨','향신료 상자','난로 앞','붉은 재','데운 술'],
+  '그린':['이슬 잎','새벽 풀밭','무화과 그늘','줄기 끝','젖은 잔디','숲의 아침'],
+  '앰버':['호박빛 저녁','촛농','황혼','따뜻한 방','금빛 방','늦은 온기'],
+  '파우더리':['분첩','오래된 커튼','먼지 낀 빛','흐린 거울','흰 장갑','오래된 편지'],
+  '인센스':['성당','향연','기도실','오래된 예배당','재의 방','흰 연기'],
+  '레더':['가죽 장갑','낡은 안장','마차','검은 코트','낡은 트렁크','검은 장정']
+};
+
+/* 향을 설명할 때 쓰는 표현들 */
+const SCENE = {
+  '차분한':['혼자 방에 앉아 있는 시간','창을 반쯤 열어 둔 오후','아무 소리도 나지 않는 새벽'],
+  '다정한':['오래 알고 지낸 사람의 곁','말없이 건네받는 온기','돌아갈 곳이 있는 저녁'],
+  '냉소적인':['한 발 물러서서 바라보는 자리','기대를 접은 사람의 여유','웃지 않고 듣는 농담'],
+  '열정적인':['식지 않는 한낮','끝까지 밀어붙이는 순간','숨이 차오르는 자리'],
+  '신비로운':['끝을 알 수 없는 복도','안개가 걷히지 않는 아침','묻지 않기로 한 이야기'],
+  '장난기 많은':['예고 없이 웃음이 터지는 순간','계획이 어긋나도 좋은 날','장난처럼 시작된 일'],
+  '고고한':['아무도 손대지 않은 정갈함','흐트러지지 않는 자세','혼자여도 완결된 자리'],
+  '순수한':['막 씻어낸 아침','아직 아무 일도 없던 때','처음 배우는 마음'],
+  '위험한':['가까이 가면 안 될 것 같은 거리','다정한 얼굴 뒤의 무엇','돌아설 수 없는 한 걸음'],
+  '우울한':['비가 그친 뒤의 창가','오래 젖어 마르지 않는 것','두고 온 자리'],
+  '성실한':['같은 자리를 오래 지키는 사람','매일 같은 시간의 걸음','묵묵히 쌓인 시간'],
+  '자유로운':['어디에도 묶이지 않는 걸음','다음 행선지를 정하지 않은 날','바람이 지나는 방향']
+};
+
+const TRAIT_HOW = {
+  '차분한':['가라앉는 향료를 골라 중심을 낮게 잡았습니다','들뜨는 향료를 덜어내 숨을 고르게 했습니다','한 자리에 오래 머무는 향료로만 채웠습니다'],
+  '다정한':['살결에 붙는 부드러운 향료를 중심에 두었습니다','모난 데 없는 향료로 둘레를 둥글렸습니다','품에 안기는 듯한 온도로 맞췄습니다'],
+  '냉소적인':['단맛을 걷어내고 마른 향료로 채웠습니다','달래는 향료를 빼고 건조하게 마무리했습니다','온기를 줄여 한 발 물러선 인상으로 뒀습니다'],
+  '열정적인':['중반부의 열기를 일부러 남겨 두었습니다','식지 않도록 따뜻한 향료를 겹쳐 쌓았습니다','앞에서부터 불을 붙이듯 세게 열었습니다'],
+  '신비로운':['윤곽이 흐려지는 향료로 층을 겹쳤습니다','끝이 잡히지 않도록 경계를 흐렸습니다','한 겹 뒤에 무언가 남겨 두었습니다'],
+  '장난기 많은':['가볍게 튀는 향료를 앞쪽에 몰아 두었습니다','예상을 비껴가는 향료를 하나 끼워 넣었습니다','무게를 덜어 발이 가볍게 만들었습니다'],
+  '고고한':['군더더기를 덜어내고 선을 곧게 세웠습니다','장식을 줄이고 뼈대만 남겼습니다','흐트러지지 않게 각을 살렸습니다'],
+  '순수한':['맑게 열리는 향료만 남겼습니다','탁해지는 향료를 걷어내 투명하게 뒀습니다','물로 씻은 듯한 결로 정리했습니다'],
+  '위험한':['가까이서만 드러나는 향료를 숨겨 두었습니다','달콤함 뒤에 날 선 향료를 감췄습니다','한 발 더 다가와야 보이도록 눌러 놨습니다'],
+  '우울한':['젖은 기운이 도는 향료로 무게를 실었습니다','마르지 않은 향료를 바닥에 깔았습니다','그늘진 쪽으로 향을 기울였습니다'],
+  '성실한':['흔들리지 않는 향료로 뼈대를 세웠습니다','처음과 끝이 같도록 층을 단단히 붙였습니다','튀는 향료 없이 고르게 배분했습니다'],
+  '자유로운':['한곳에 머물지 않도록 층을 느슨하게 풀었습니다','묶이지 않게 사이를 넉넉히 띄웠습니다','어디로든 번지도록 가장자리를 열어 뒀습니다']
+};
+
+/* 어코드마다 붙일 수 있는 수식어 — 같은 향료도 매번 다르게 부릅니다 */
+const ACC_ADJ = {
+  '시트러스':['상큼한','껍질을 깐 듯한','밝은'],
+  '프루티':['무르익은','달게 익은','과즙 어린'],
+  '화이트 플로럴':['희게 핀','짙게 핀','농익은'],
+  '로지':['붉게 핀','겹겹의','이슬 맺힌'],
+  '파우더리':['파우더리한','분 바른 듯한','뽀얀'],
+  '그린':['풋내 나는','갓 자른','서걱이는'],
+  '아로마틱':['서늘한','알싸한','잎을 비빈 듯한'],
+  '아쿠아틱':['물기 어린','짠기 있는','투명한'],
+  '프레시 스파이시':['톡 쏘는','알알한','매콤 서늘한'],
+  '웜 스파이시':['데운','알싸하게 따뜻한','후끈한'],
+  '우디':['마른','결이 고운','속이 단단한'],
+  '침엽수':['송진 어린','뾰족한','침엽 냄새의'],
+  '어시':['흙내 나는','축축한','뿌리 같은'],
+  '머스키':['살결 같은','포근한','은근한'],
+  '앰버':['호박빛의','데워진','진득한'],
+  '발사믹':['끈적한','수지 같은','눅진한'],
+  '바닐라':['달큰한','부드러운','크림 같은'],
+  '스위트':['달콤한','설탕 같은','사근한'],
+  '구르망':['먹음직한','고소한','달게 구운'],
+  '레더':['가죽 같은','질긴','무두질한'],
+  '스모키':['그을린','연기 밴','탄 내 나는'],
+  '인센스':['향 사른','자욱한','성스러운'],
+  '애니멀릭':['짐승 같은','체온 어린','야릇한'],
+  '알데하이드':['비누 같은','반짝이는','사각이는']
+};
+
+const LEAD = [
+  f => `${f} 계열의 향입니다.`,
+  f => `${J(f,'으로/로')} 묶이는 향입니다.`,
+  f => `계열로 치면 ${f}입니다.`,
+  f => `${f}의 얼개를 가진 향입니다.`,
+  f => `${f} 쪽에 서 있는 향입니다.`
+];
+const OPEN = [
+  (a, b, w) => `첫 5분은 ${J(a,'과/와')} ${J(b,'이/가')} ${w} 열어젖힙니다.`,
+  (a, b, w) => `문을 여는 건 ${a}입니다. 곧이어 ${J(b,'이/가')} ${w} 따라붙습니다.`,
+  (a, b, w) => `${J(a,'으로/로')} 시작해 ${J(b,'이/가')} ${w} 번지는 도입부입니다.`,
+  (a, b, w) => `뚜껑을 열면 ${J(a,'이/가')} 먼저 ${w} 치고 나옵니다. ${J(b,'은/는')} 반 박자 뒤입니다.`,
+  (a, b, w) => `처음 닿는 건 ${a}입니다. ${J(b,'이/가')} 그 위에 ${w} 겹칩니다.`,
+  (a, b, w) => `${J(a,'과/와')} ${b}, 두 갈래로 ${w} 시작합니다.`,
+  (a, b, w) => `${J(a,'이/가')} ${w} 앞서고 ${J(b,'이/가')} 뒤를 받치며 문이 열립니다.`,
+  (a, b, w) => `${w} 트이는 도입부입니다. ${J(a,'과/와')} ${J(b,'이/가')} 앞에 섭니다.`
+];
+const MID = [
+  (a, b) => `30분쯤 지나면 ${J(a,'이/가')} 중심을 잡고, ${J(b,'이/가')} 그 주위를 감쌉니다.`,
+  (a, b) => `열기가 가시면 ${J(a,'이/가')} 자리를 잡습니다. ${J(b,'은/는')} 그 곁에서 윤곽을 다듬습니다.`,
+  (a, b) => `향의 몸통은 ${a}입니다. ${J(b,'이/가')} 그 결을 눌러 정돈합니다.`,
+  (a, b) => `한 시간쯤에는 ${J(a,'이/가')} 가장 또렷합니다. ${J(b,'은/는')} 그 뒤로 물러나 있습니다.`,
+  (a, b) => `${J(a,'을/를')} 가운데 두고 ${J(b,'이/가')} 테두리를 그립니다.`,
+  (a, b) => `중반은 ${a}의 몫입니다. ${J(b,'이/가')} 거기에 두께를 더합니다.`,
+  (a, b) => `첫인상이 가라앉으면 ${J(a,'과/와')} ${J(b,'이/가')} 함께 올라옵니다.`,
+  (a, b) => `${J(a,'이/가')} 향의 축을 세우고, ${J(b,'은/는')} 그 축을 부드럽게 풉니다.`
+];
+const BASE = [
+  (a, b, t) => `마지막에는 ${J(a,'과/와')} ${J(b,'이/가')} 피부에 남아 ${t} 정도 이어집니다.`,
+  (a, b, t) => `잔향은 ${a} 쪽으로 가라앉고, ${J(b,'이/가')} 그 아래를 받칩니다. ${t}쯤 머뭅니다.`,
+  (a, b, t) => `${J(a,'이/가')} 오래 버티는 동안 ${J(b,'은/는')} 천천히 옅어집니다. ${t} 남습니다.`,
+  (a, b, t) => `끝에 남는 건 ${a}입니다. ${J(b,'이/가')} 그 그림자처럼 따라붙어 ${t}쯤 갑니다.`,
+  (a, b, t) => `${t} 뒤까지 ${J(a,'이/가')} 옷깃에 남습니다. ${J(b,'은/는')} 그보다 먼저 사그라듭니다.`,
+  (a, b, t) => `바닥에는 ${J(a,'과/와')} ${b}. ${t} 동안 서서히 풀립니다.`,
+  (a, b, t) => `${J(a,'은/는')} 마지막까지 자리를 지키고, ${J(b,'이/가')} 그 온도를 맞춥니다. ${t} 갑니다.`,
+  (a, b, t) => `향이 잦아들며 ${J(a,'과/와')} ${J(b,'이/가')} 나란히 남습니다. ${t} 정도입니다.`
+];
+/* 문장을 늘어놓는 순서 — 골격 자체가 매번 달라집니다 */
+const EN_ADJ = {'차분한':'Quiet','다정한':'Warm','냉소적인':'Dry','열정적인':'Burning','신비로운':'Dim',
+  '장난기 많은':'Light','고고한':'Pale','순수한':'Clear','위험한':'Sharp','우울한':'Damp','성실한':'Steady','자유로운':'Loose'};
+/* 한글 명사와 순서를 맞춘 영문 명사 */
+const EN_NOUN = {
+  '우디':['Study','Old Woods','Dry Timber','Cedar Shade','Desk Drawer','Winter Woods'],
+  '플로럴':['Glass Vase','Late Spring','Bouquet','Garden Walk','Spring Window','Dried Petal'],
+  '시트러스':['Morning Window','Orchard','First Light','Glass','Early Walk','Lemon Peel'],
+  '머스크':['White Linen','Skin','Afternoon Sun','Empty Shirt','Warm Nape','Morning Sheets'],
+  '구르망':['Sugar Snow','Chocolate Box','Sweet Smoke','By the Oven','Sugar Box','Afternoon Treat'],
+  '아쿠아틱':['High Tide','Sea Fog','On the Water','Wet Stone','Wave End','Grey Sea'],
+  '스파이시':['Red Pepper','Ember','Spice Box','By the Stove','Red Ash','Warmed Wine'],
+  '그린':['Dewed Leaf','Dawn Field','Fig Shade','Stem End','Wet Grass','Forest Morning'],
+  '앰버':['Amber Evening','Candle Wax','Dusk','Warm Room','Golden Room','Late Warmth'],
+  '파우더리':['Powder Puff','Old Curtain','Dusty Light','Clouded Mirror','White Glove','Old Letter'],
+  '인센스':['Cathedral','Incense Haze','Prayer Room','Old Chapel','Ash Room','White Smoke'],
+  '레더':['Leather Glove','Worn Saddle','Carriage','Black Coat','Old Trunk','Black Binding']
+};
+
+const SKELETON = [
+  ['lead','trait','open','mid','base','link','wish','avoid','scene'],
+  ['open','mid','base','lead','trait','link','wish','avoid','scene'],
+  ['lead','open','mid','base','scene','trait','link','wish','avoid'],
+  ['trait','lead','open','mid','base','link','wish','avoid','scene']
+];
+
+/* ============================================================
+   메인
+   ============================================================ */
+function blend(input){
+  const { name='', desc='', wish='', traits=[], prefs=[], season='상관없음', color='', reroll=0 } = input;
+  const rand = rng(hash([name,desc,wish,traits.join(),prefs.join(),season,input.power,color,reroll].join('|')));
+
+  /* 일상어로 적은 향 취향 읽기 */
+  const wishText = String(wish || '');
+  const wishAll = scanHits(wishText, WISH);
+  let powerShift = 0;
+  wishAll.forEach(h => { if(h.p) powerShift += h.neg ? -h.p : h.p; });
+  const wishHits = wishAll.filter(h => (h.f && h.f.length) || (h.o && h.o.length));
+  const wishFamW = {};   // 계열 → 가감점
+  wishHits.forEach(h => {
+    const base = (h.o && h.o.length) ? 2.2 : 5.0;   // 향료를 콕 집었으면 계열은 약하게
+    const v = h.neg ? -base * 1.6 : base;
+    (h.f || []).forEach(f => wishFamW[f] = (wishFamW[f] || 0) + v);
+  });
+  const wishOilNames = new Set(wishHits.filter(h => !h.neg).flatMap(h => h.o || []));
+  const avoidOils = new Set(wishHits.filter(h => h.neg).flatMap(h => h.o || []));
+  // 설정 글에서 '싫다'고 적은 향료도 피합니다
+  const power = Math.max(1, Math.min(5, Number(input.power || 3) + powerShift));
+  const colorFams = colorToFamilies(color);
+
+  /* 설정 글에서 단서 읽기 */
+  const text = String(desc || '');
+  const hits = scanHits(text, HINTS);
+  const namedOils = OILS.filter(o => text.includes(o.k));   // 향료를 직접 적은 경우
+  const hintFamW = {}, hintTraitW = {};
+  hits.forEach(h => {
+    const s = h.neg ? -1 : 1;
+    (h.f || []).forEach(f => hintFamW[f] = (hintFamW[f] || 0) + 3.4 * s);
+    (h.t || []).forEach(t => hintTraitW[t] = (hintTraitW[t] || 0) + 2.2 * s);
+  });
+  const hintTraits = Object.keys(hintTraitW).filter(t => hintTraitW[t] > 0);
+  const allTraits = [...new Set([...traits, ...hintTraits])];
+
+  /* 1) 향료 점수 */
+  const scored = OILS.map(o => {
+    let sc = 0;
+    o.t.forEach(t => {
+      if(traits.includes(t)) sc += 3.2;
+      if(hintTraitW[t]) sc += hintTraitW[t];
+    });
+    o.f.forEach(f => {
+      if(prefs.includes(f)) sc += 4.5;
+      if(colorFams.includes(f)) sc += 3.0;
+      if(hintFamW[f]) sc += hintFamW[f];
+      if(wishFamW[f]) sc += wishFamW[f];
+    });
+    if(namedOils.includes(o)) sc += 9;
+    if(wishOilNames.has(o.k)) sc += 14;
+    if(avoidOils.has(o.k)) sc -= 30;
+    if(season !== '상관없음' && o.s.includes(season)) sc += 2.2;
+    sc -= Math.abs(o.p - (Number(power) + 0.5)) * 0.9;
+    sc += rand() * 2.6;
+    return { o, sc };
+  }).sort((a,b) => b.sc - a.sc);
+
+  /* 2) 층마다 3종, 계열이 겹치면 감점 */
+  const pick = layer => {
+    const cand = scored.filter(x => x.o.l === layer).slice(0, 8);
+    const used = {}, chosen = [];
+    for(const c of cand){
+      if(chosen.length >= 3) break;
+      const pen = c.o.f.reduce((a,f) => a + (used[f] || 0), 0);
+      // 콕 집어 요청한 향료는 계열이 겹쳐도 넣습니다
+      const forced = wishOilNames.has(c.o.k) || namedOils.includes(c.o);
+      if(!forced && pen >= 2 && chosen.length < 2) continue;
+      chosen.push(c.o);
+      c.o.f.forEach(f => used[f] = (used[f] || 0) + 1);
+    }
+    return chosen;
+  };
+  const picked = [pick(0), pick(1), pick(2)];
+
+  /* 3) 비율 (총합 100) */
+  const split = SPLIT[Math.min(5, Math.max(1, Number(power)))];
+  const notes = { top:[], middle:[], base:[] };
+  const keys = ['top','middle','base'];
+  let total = 0;
+  picked.forEach((layer, li) => {
+    layer.forEach((o, i) => {
+      const r = Math.max(3, Math.round(split[li] * SHARE[i]));
+      notes[keys[li]].push({ ko:o.k, en:o.e, ratio:r, acc:(o.a || [])[0], acc2:(o.a || [])[1], why:reason(o, allTraits, rand) });
+      total += r;
+    });
+  });
+  if(total !== 100){
+    const all = [...notes.top, ...notes.middle, ...notes.base].sort((a,b) => b.ratio - a.ratio);
+    all[0].ratio += 100 - total;
+  }
+  const flat = picked.flat();
+  const ratioOf = o => {
+    const li = o.l, i = picked[li].indexOf(o);
+    return notes[keys[li]][i].ratio;
+  };
+
+  /* 4) 메인 어코드 — 향료가 가진 어코드에 비율을 실어 모읍니다 */
+  const accTally = {};
+  flat.forEach(o => (o.a || []).forEach(tag => accTally[tag] = (accTally[tag] || 0) + ratioOf(o)));
+  // 절대 기준: 배합의 52%를 차지하면 100%로 봅니다.
+  // (향료 하나가 어코드 두세 개에 걸치므로 합계는 100을 넘습니다)
+  const ACC_FULL = 52;
+  const accords = Object.entries(accTally)
+    .sort((a,b) => b[1] - a[1]).slice(0, 6)
+    .map(([nm, v]) => ({ name:nm, raw:v, pct:Math.min(100, Math.round(v / ACC_FULL * 100)),
+                         color:ACCORD_COLOR[nm] || '#A99C8C' }));
+
+  /* 5) 계절 적합도 */
+  const seaTally = { 봄:0, 여름:0, 가을:0, 겨울:0 };
+  flat.forEach(o => o.s.forEach(s => seaTally[s] += ratioOf(o)));
+  const seaMax = Math.max(...Object.values(seaTally), 1);
+  const seasonFit = SEASONS.map(s => ({ name:s, pct:Math.round(seaTally[s] / seaMax * 100) }));
+
+  /* 6) 향의 성격 */
+  const wSum = flat.reduce((a,o) => a + ratioOf(o), 0);
+  const avgW = flat.reduce((a,o) => a + o.w * ratioOf(o), 0) / wSum;
+  const avgP = flat.reduce((a,o) => a + o.p * ratioOf(o), 0) / wSum;
+  const pct = v => Math.max(6, Math.min(100, Math.round(v)));
+  const traitsBar = [
+    { name:'무게감', left:'가벼움', right:'무거움', pct:pct((avgP - 1) / 4 * 100) },
+    { name:'온도감', left:'서늘함', right:'따뜻함', pct:pct((avgW + 2) / 4 * 100) },
+    { name:'지속력', left:'짧음',   right:'김',     pct:pct(Number(power) / 5 * 100) },
+    { name:'확산력', left:'가까이', right:'멀리',   pct:pct((Number(power) - .4) / 5 * 100) }
+  ];
+  const night = pct((traitsBar[0].pct + traitsBar[1].pct) / 2);
+  const dayNight = [{ name:'낮', pct:pct(100 - night + 6) }, { name:'밤', pct:night }];
+
+  /* 7) 문장 */
+  const topWarm = picked[0].reduce((a,o) => a + o.w, 0);
+  const openWord = topWarm <= -2 ? '차갑게' : topWarm <= 0 ? '서늘하게' : topWarm >= 3 ? '뜨겁게' : '따뜻하게';
+  const family = famLabel(picked);
+  const longevity = ['2~3시간','3~5시간','5~7시간','7~9시간','9시간 이상'][power-1];
+  const seasonWord = season === '상관없음' ? seasonGuess(picked) : season;
+  const sillage = ['거의 붙는 정도','가까이서만','팔 길이 정도','한 걸음 밖까지','방 안을 채움'][power-1];
+
+  // 향료를 부르는 방식도 매번 달라집니다
+  const usedAdj = new Set();
+  const ph = n => {
+    const pool = (ACC_ADJ[n.acc] || ACC_ADJ[n.acc2] || []).filter(a => !usedAdj.has(a));
+    if(!pool.length || rand() >= .55) return n.ko;
+    const a = pickRand(pool, rand);
+    usedAdj.add(a);
+    return `${a} ${n.ko}`;
+  };
+  const pick2 = arr => pickRand(arr, rand);
+  const parts = {
+    lead:  pick2(LEAD)(family),
+    trait: allTraits.length
+      ? `${allTraits.slice(0,2).join('·')} 인상이라 ${pick2(TRAIT_HOW[allTraits[0]] || ['중심을 낮게 잡았습니다'])}.`
+      : null,
+    open:  pick2(OPEN)(ph(notes.top[0]), ph(notes.top[1]), openWord),
+    mid:   pick2(MID)(ph(notes.middle[0]), ph(notes.middle[1])),
+    base:  pick2(BASE)(ph(notes.base[0]), ph(notes.base[1]), longevity),
+    link:  null, wish: null, avoid: null, scene: null
+  };
+
+  const nameTrait = allTraits[0] || pickRand(TRAITS, rand);
+  const nameFam = family.split(' ')[0];
+  const adjPool = ADJ[nameTrait] || ['조용한'];
+  const nounPool = NOUN[nameFam] || ['숲'];
+  const adjKo = pickRand(adjPool, rand);
+  // 이름이 너무 길어지지 않도록 짧은 명사를 우선합니다
+  let ni = Math.floor(rand() * nounPool.length) % nounPool.length;
+  if((adjKo + nounPool[ni]).length > 9){
+    const short = nounPool.map((n, i) => [n, i]).sort((a, b) => a[0].length - b[0].length)[0];
+    ni = short[1];
+  }
+  const nameKo = `${adjKo} ${nounPool[ni]}`;
+  const nameEn = `${EN_ADJ[nameTrait] || 'Quiet'} ${(EN_NOUN[nameFam] || ['Woods'])[ni] || 'Woods'}`;
+
+  // 설정의 낱말이 어떤 향료가 됐는지 밝혀 줍니다
+  const part = (w, pair) => `'${w}'` + J(w, pair).slice(w.length);
+  const links = [];
+  hits.filter(h => !h.neg).forEach(h => {
+    if(links.length >= 2) return;
+    // 그 단서의 대표 계열에 가깝고, 비중이 큰 향료를 고릅니다
+    const cand = flat
+      .filter(o => o.f.some(f => h.f.includes(f)) && !links.some(l => l.oil === o.k))
+      .sort((a, b) => ((b.f[0] === h.f[0]) - (a.f[0] === h.f[0]))
+                    || (b.f.includes(h.f[0]) - a.f.includes(h.f[0]))
+                    || (ratioOf(b) - ratioOf(a)));
+    if(cand[0]) links.push({ word:h.word, oil:cand[0].k });
+  });
+  const wishLinks = [];
+  wishHits.filter(h => !h.neg).forEach(h => {
+    if(wishLinks.length >= 2) return;
+    const cand = flat
+      .filter(o => (h.o.includes(o.k) || o.f.some(f => h.f.includes(f))) && !wishLinks.some(l => l.oil === o.k))
+      .sort((a, b) => ((h.o.includes(b.k)) - (h.o.includes(a.k))) || (ratioOf(b) - ratioOf(a)));
+    if(cand[0]) wishLinks.push({ word:h.word, oil:cand[0].k });
+  });
+  parts.wish = wishLinks.length
+    ? `적어주신 ${wishLinks.map(l => `${part(l.word,'은/는')} ${J(l.oil,'으로/로')}`).join(', ')} 풀었습니다.`
+    : null;
+
+  parts.link = links.length
+    ? `설정에서 읽은 ${links.map(l => `${part(l.word,'은/는')} ${J(l.oil,'으로/로')}`).join(', ')} 옮겼습니다.`
+    : null;
+
+  // 빼 달라고 한 것
+  const avoided = [...hits, ...wishHits].filter(h => h.neg).map(h => h.n || h.word);
+  parts.avoid = avoided.length
+    ? `${avoided.slice(0,2).map(w => part(w,'은/는')).join(', ')} 빼 달라고 하셔서 넣지 않았습니다.`
+    : null;
+
+  const scene = allTraits.length ? pickRand(SCENE[allTraits[0]] || [], rand) : null;
+  parts.scene = scene
+    ? `${scene}에 어울리는, ${seasonWord}의 향입니다.`
+    : `${seasonWord}에 어울립니다.`;
+
+  const concept = pickRand(SKELETON, rand).map(k => parts[k]).filter(Boolean).join(' ');
+
+  const accord = `${notes.middle[0].ko} 위에 ${J(notes.base[0].ko,'을/를')} 깔고, ${J(notes.top[0].ko,'으로/로')} 첫 숨을 틔운 향.`;
+
+  // 카드에 이미지가 없을 때 덧붙이는 문장들
+  const conceptExtra = [
+    `핵심 어코드는 ${accords.slice(0,3).map(a => a.name).join(' · ')}입니다.`,
+    `${notes.middle[0].ko} 위에 ${J(notes.base[0].ko,'을/를')} 깔고 ${J(notes.top[0].ko,'으로/로')} 첫 숨을 틔웠습니다.`,
+    `${J(notes.base[0].ko,'은/는')} 피부에 가장 오래 남는 자리라 ${
+      notes.base[0].ratio >= 15 ? '이 향의 인상을 끝까지 끌고 갑니다.' : '조용히 뒤를 받치는 정도로 두었습니다.'}`,
+    `뿌린 뒤 ${['30분','한 시간','한 시간 반','두 시간','두 시간 반'][power-1]}쯤 지나면 미들 노트가 가장 또렷해집니다.`,
+    `확산은 ${sillage}, 지속은 ${longevity} 정도로 잡았습니다.`
+  ].join(' ');
+
+  /* 8) 비슷한 향수 */
+  const OIL_NAMES = new Set(OILS.map(o => o.k));
+  const myOils = new Set(flat.map(o => o.k));
+  const myFams = new Set();
+  flat.forEach(o => o.f.forEach(f => myFams.add(f)));
+  const similar = PERFUMES.map(p => {
+    const sharedOils = p.tags.filter(t => OIL_NAMES.has(t) && myOils.has(t));
+    const sharedFams = p.tags.filter(t => !OIL_NAMES.has(t) && myFams.has(t));
+    const famWord = p.f.split(' ').filter(w => myFams.has(w)).length;
+    // 겹치는 향료가 있어야 점수가 오릅니다. 계열만 같은 향수는 낮게 잡힙니다.
+    const raw = sharedOils.length * 14 + sharedFams.length * 5 + famWord * 7;
+    return { brand:p.b, name:p.n, year:p.y, family:p.f, sharedOils, raw,
+             match: Math.min(95, Math.round(22 + raw + rand() * 2)) };
+  }).sort((a,b) => b.match - a.match)
+    .filter((s, i) => i === 0 || s.match >= 45)   // 너무 먼 향수는 아예 빼고
+    .slice(0,3)
+    .map(s => ({ ...s, why: s.sharedOils.length
+      ? `${J(s.sharedOils.slice(0,3).join('·'),'이/가')} 겹칩니다. 계열은 ${s.family}.`
+      : `겹치는 향료는 없지만 ${s.family} 쪽 인상이 가깝습니다.` }));
+
+  const domTrait = traits[0] || pickRand(TRAITS, rand);
+  const domFam = family.split(' ')[0];
+
+  const serial = String(1000 + hash([name, desc, wish, color, reroll].join('|')) % 9000);
+
+  return {
+    serial,
+    colorFams,
+    power,
+    nameKo,
+    nameEn,
+    family, concept, conceptExtra, accord, notes, accords, seasonFit, traitsBar, dayNight, similar,
+    longevity,
+    concentration: ['오 드 코롱 (부향률 5%)','오 드 뚜왈렛 (10%)','오 드 퍼퓸 (18%)','오 드 퍼퓸 (22%)','퍼퓸 (28%)'][power-1],
+    season: season === '상관없음' ? seasonFit.slice().sort((a,b)=>b.pct-a.pct)[0].name : season,
+    time: night > 58 ? '해가 진 뒤' : night < 42 ? '한낮' : '늦은 오후',
+    sillage,
+    tips: [
+      `베이스부터 섞고 ${J(notes.base[0].ko,'을/를')} 기준으로 나머지를 맞추세요.`,
+      `${J(notes.top[0].ko,'은/는')} 날아가기 쉬우니 마지막에 넣습니다.`,
+      '섞은 뒤 최소 2주는 어두운 곳에서 숙성시켜야 층이 붙습니다.'
+    ]
+  };
+}
+
+function reason(o, traits, rand){
+  const hit = o.t.find(t => traits.includes(t));
+  const base = {
+    0:['첫인상을 여는 자리','처음 5분을 담당','문을 여는 향'],
+    1:['향의 성격을 정하는 축','30분 뒤 올라오는 중심','인상의 몸통'],
+    2:['오래 남는 잔향','피부에 붙는 마지막 층','뒷모습에 해당하는 자리']
+  }[o.l];
+  return hit ? `${hit} 인상 — ${pickRand(base, rand)}` : pickRand(base, rand);
+}
+function pickRand(arr, rand){ return arr[Math.floor(rand() * arr.length) % arr.length]; }
+function seasonGuess(picked){
+  const c = {};
+  picked.flat().forEach(o => o.s.forEach(s => c[s] = (c[s] || 0) + 1));
+  return Object.entries(c).sort((a,b) => b[1] - a[1])[0][0];
+}
+function famLabel(picked){
+  const count = {};
+  picked.forEach((layer, li) => layer.forEach(o => o.f.forEach(f =>
+    count[f] = (count[f]||0) + [0.6, 1, 2][li])));
+  return Object.entries(count).sort((a,b) => b[1]-a[1]).slice(0,2).map(e => e[0]).join(' ');
+}
+</script>
+<script>/* ============================================================
+   card.js — 결과 카드 이미지
+   가로형(1600) / 세로형(820) 두 배치를 같은 코드로 그립니다.
+   ============================================================ */
+
+const INK = '#1B1E1C';
+const SANS  = '"Pretendard","Pretendard Variable","Apple SD Gothic Neo","Malgun Gothic",sans-serif';
+const SERIF = '"Nanum Myeongjo","Gowun Batang","Apple SD Gothic Neo",serif';
+const TRACK = '0.8px';
+
+/* 글자 크기 (항목명 · 값 · 설명 세 단계) */
+const SZ = {
+  name: 58, nameEn: 21, pill: 18,
+  title: 27,
+  charName: 30, tagline: 23, concept: 20,
+  layerName: 22, layerPct: 27, noteName: 26, noteEn: 17, noteRatio: 22,
+  accName: 26, accPct: 24,
+  traitName: 20, traitPct: 24, traitCap: 16,
+  seasonName: 23, seasonPct: 24,
+  simBrand: 17, simName: 29, simPct: 33,
+  statKey: 17, statVal: 25,
+  sign: 16
+};
+
+const F = (w, s) => `${w} ${s}px ${SERIF}`;   // 본문
+const S = (w, s) => `${w} ${s}px ${SERIF}`;   // 제목
+const N = (w, s) => `${w} ${s}px ${SANS}`;    // 숫자
+
+function hexRgb(hex){
+  const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex || '#E9A6B8');
+  return m ? [1,2,3].map(i => parseInt(m[i],16)) : [233,166,184];
+}
+function tint(hex, amt){
+  const [r,g,b] = hexRgb(hex);
+  const mix = (c, p) => Math.round(p + (c - p) * amt);
+  return `rgb(${mix(r,250)},${mix(g,248)},${mix(b,244)})`;
+}
+function rgbToHsl(r, g, b){
+  r /= 255; g /= 255; b /= 255;
+  const mx = Math.max(r,g,b), mn = Math.min(r,g,b), d = mx - mn;
+  const l = (mx + mn) / 2;
+  const s = d === 0 ? 0 : d / (1 - Math.abs(2*l - 1));
+  let h = 0;
+  if(d !== 0){
+    if(mx === r) h = 60 * (((g-b)/d) % 6);
+    else if(mx === g) h = 60 * (((b-r)/d) + 2);
+    else h = 60 * (((r-g)/d) + 4);
+  }
+  return [(h+360)%360, s, l];
+}
+function setLS(ctx, v){ try { ctx.letterSpacing = v; } catch(e){} }
+
+const PUNCT = '.,·)%]}」』!?’”';
+function wrap(ctx, text, maxW){
+  const out = []; let line = '';
+  for(const ch of String(text || '')){
+    if(ch === '\n'){ out.push(line); line = ''; continue; }
+    const over = ctx.measureText(line + ch).width > maxW;
+    if(over && line && !PUNCT.includes(ch)){ out.push(line); line = ch; }
+    else line += ch;
+  }
+  if(line) out.push(line);
+  return out;
+}
+function roundRect(ctx, x, y, w, h, r){
+  const rr = Math.max(0, Math.min(r, h/2, w/2));
+  ctx.beginPath();
+  ctx.moveTo(x+rr, y);
+  ctx.arcTo(x+w, y, x+w, y+h, rr);
+  ctx.arcTo(x+w, y+h, x, y+h, rr);
+  ctx.arcTo(x, y+h, x, y, rr);
+  ctx.arcTo(x, y, x+w, y, rr);
+  ctx.closePath();
+}
+async function readyFonts(sample){
+  if(!document.fonts) return;
+  try{
+    await Promise.all([400,700].flatMap(w => [
+      document.fonts.load(`${w} 40px "Nanum Myeongjo"`, sample),
+      document.fonts.load(`${w} 40px "Gowun Batang"`, sample),
+      document.fonts.load(`${w} 40px "Pretendard"`, sample)
+    ]));
+    await document.fonts.ready;
+  }catch(e){}
+}
+
+/**
+ * @param opts { charName, tagline, color, image:{el,zoom,ox,oy}, layout:'wide'|'tall' }
+ */
+async function drawCard(canvas, D, opts){
+  const sample = [
+    D.nameKo, D.nameEn, D.family, D.concept, D.conceptExtra || '', opts.charName || '', opts.tagline || '',
+    ...D.accords.map(a => a.name),
+    ...[...D.notes.top, ...D.notes.middle, ...D.notes.base].map(n => n.ko + n.en),
+    ...D.similar.map(s => s.brand + s.name),
+    D.concentration, D.longevity, D.sillage, D.season, D.time,
+    '메인 어코드 노트 피라미드 탑 노트 미들 노트 베이스 노트 향의 성격 어울리는 계절 비슷한 향수 에게 어울리는 향 가장 어울리는 때 계열 농도 지속력',
+    '가벼움 무거움 서늘함 따뜻함 짧음 길게 가까이 멀리 무게감 온도감 지속력 확산력 봄 여름 가을 겨울 낮 밤 0123456789% ·'
+  ].join(' ');
+  await readyFonts(sample);
+
+  const tall = opts.layout === 'tall';
+  const CARD_W = tall ? 820 : 1600;
+  const M  = tall ? 30 : 52;      // 바깥 여백
+  const G  = tall ? 16 : 22;      // 칸 사이
+  const PP = tall ? 26 : 30;      // 칸 안쪽 여백
+  const W  = CARD_W - M * 2;
+
+  const color = opts.color || '#E9A6B8';
+  const [th, ts0] = rgbToHsl(...hexRgb(color));
+  const ts = Math.max(.26, Math.min(.60, ts0));
+  const HUE = Math.round(th), SAT = Math.round(ts * 100);
+  const inkC = `hsl(${HUE},${SAT}%,38%)`;
+  const deep = `hsl(${HUE},${Math.min(90, SAT + 6)}%,28%)`;
+  const soft = a => `hsla(${HUE},${SAT}%,44%,${a})`;
+  const gray = a => `rgba(27,30,28,${a})`;
+  const img = opts.image && opts.image.el;
+  const iw = img ? (img.naturalWidth || img.width) : 0;
+  const ih = img ? (img.naturalHeight || img.height) : 0;
+
+  const tmp = document.createElement('canvas');
+  tmp.width = CARD_W; tmp.height = tall ? 4200 : 2600;
+  const ctx = tmp.getContext('2d');
+  ctx.textBaseline = 'alphabetic';
+  ctx.textAlign = 'left';
+  setLS(ctx, TRACK);
+
+  const fit = (weight, size, text, maxW, fam) => {
+    const mk = t => `${weight} ${t}px ${fam || SERIF}`;
+    let s = size;
+    ctx.font = mk(s);
+    while(ctx.measureText(text).width > maxW && s > 12){ s -= 1; ctx.font = mk(s); }
+    return s;
+  };
+  /* 마지막 줄만 왼쪽, 나머지는 양쪽 맞춤 */
+  const justify = (text, x, y0, maxW, lineH, maxLines) => {
+    const lines = wrap(ctx, text, maxW).slice(0, maxLines);
+    let yy = y0;
+    lines.forEach((ln, i) => {
+      const chars = [...ln];
+      const w = ctx.measureText(ln).width;
+      const gap = (maxW - w) / Math.max(1, chars.length - 1);
+      if(i === lines.length - 1 || gap > 7 || chars.length < 6){
+        ctx.fillText(ln, x, yy);
+      } else {
+        let cx = x;
+        chars.forEach(ch => { ctx.fillText(ch, cx, yy); cx += ctx.measureText(ch).width + gap; });
+      }
+      yy += lineH;
+    });
+    return yy;
+  };
+
+  const panels = [];
+  const panel = (x, y, w) => { const p = { x, y, w, h:0 }; panels.push(p); return p; };
+  const title = (text, x, ty) => {
+    ctx.fillStyle = soft(.9);
+    roundRect(ctx, x, ty - 20, 7, 24, 3.5); ctx.fill();
+    ctx.font = S(700, SZ.title);
+    ctx.fillStyle = inkC;
+    ctx.textAlign = 'left';
+    ctx.fillText(text, x + 19, ty);
+  };
+  const bar = (x, by, w, h, ratio, fill) => {
+    roundRect(ctx, x, by, w, h, h/2);
+    ctx.fillStyle = gray(.09); ctx.fill();
+    roundRect(ctx, x, by, Math.max(h, w * Math.min(1, ratio)), h, h/2);
+    ctx.fillStyle = fill; ctx.fill();
+  };
+
+  /* ── 어코드 팔레트 (상징색 색상환 기준) ── */
+  const baseS = Math.max(.34, Math.min(.62, ts));
+  const HUE_OFF = [0, -14, 13, -25, 22, -34];
+  const accColor = i => `hsl(${((th + HUE_OFF[i % 6]) % 360 + 360) % 360},`
+    + `${Math.round((baseS - i * .008) * 100)}%,${Math.round((.39 + i * .048) * 100)}%)`;
+  const accs = D.accords.slice(0, 6).map((a, i) => ({ ...a, color: accColor(i) }));
+
+  /* 향료의 대표 어코드 색 (상위 6개에 없으면 옅은 테마색) */
+  const accMap = {};
+  accs.forEach(a => accMap[a.name] = a.color);
+  const noteColor = n => accMap[n.acc] || accMap[n.acc2] || soft(.34);
+
+  const radar = (cx, cy, R, items) => {
+    const n = items.length;
+    const ang = i => -Math.PI/2 + i * (Math.PI*2 / n);
+    const pt = (i, r) => [cx + Math.cos(ang(i)) * r, cy + Math.sin(ang(i)) * r];
+    ctx.lineWidth = 1.3;
+    [0.25, 0.5, 0.75, 1].forEach(step => {
+      ctx.beginPath();
+      for(let i = 0; i < n; i++){ const [x, yy] = pt(i, R*step); i ? ctx.lineTo(x, yy) : ctx.moveTo(x, yy); }
+      ctx.closePath();
+      ctx.strokeStyle = step === 1 ? gray(.2) : gray(.11);
+      try{ ctx.setLineDash([4, 5]); }catch(e){}
+      ctx.stroke();
+    });
+    try{ ctx.setLineDash([]); }catch(e){}
+    ctx.strokeStyle = gray(.11);
+    for(let i = 0; i < n; i++){ const [x, yy] = pt(i, R); ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(x, yy); ctx.stroke(); }
+    ctx.beginPath();
+    items.forEach((a, i) => { const [x, yy] = pt(i, R * Math.max(.07, a.pct/100)); i ? ctx.lineTo(x, yy) : ctx.moveTo(x, yy); });
+    ctx.closePath();
+    ctx.fillStyle = soft(.22); ctx.fill();
+    ctx.strokeStyle = inkC; ctx.lineWidth = 2.6; ctx.stroke();
+    items.forEach((a, i) => {
+      const [x, yy] = pt(i, R * Math.max(.07, a.pct/100));
+      ctx.beginPath(); ctx.arc(x, yy, 9, 0, 7);
+      ctx.fillStyle = a.color; ctx.fill();
+      ctx.strokeStyle = '#fff'; ctx.lineWidth = 2.4; ctx.stroke();
+    });
+  };
+
+  /* ══════════ 칸별 그리기 ══════════ */
+
+  function secProfile(x, y, w){
+    const p = panel(x, y, w);
+    let yy = y + PP + 4;
+    const inner = w - PP * 2;
+    if(img){
+      const fh = Math.round(inner * (tall ? .74 : 1.18));
+      ctx.save();
+      roundRect(ctx, x + PP, yy, inner, fh, 6); ctx.clip();
+      const z = opts.image.zoom || 1;
+      const cover = Math.max(inner / iw, fh / ih) * z;
+      const dw = iw * cover, dh = ih * cover;
+      const dx = x + PP + (inner - dw)/2 + (opts.image.ox || 0) * (dw - inner) / 2;
+      const dy = yy + (fh - dh)/2 + (opts.image.oy || 0) * (dh - fh) / 2;
+      ctx.drawImage(img, dx, dy, dw, dh);
+      ctx.restore();
+      ctx.strokeStyle = gray(.1); ctx.lineWidth = 1.5;
+      roundRect(ctx, x + PP, yy, inner, fh, 6); ctx.stroke();
+      yy += fh + 58;
+    } else {
+      yy += 44;
+    }
+    if(opts.charName){
+      ctx.font = S(700, SZ.charName);
+      ctx.fillStyle = inkC;
+      ctx.fillText(opts.charName, x + PP, yy);
+      const cnw = ctx.measureText(opts.charName).width;
+      ctx.font = F(400, SZ.concept);
+      ctx.fillStyle = gray(.55);
+      ctx.fillText('에게 어울리는 향', x + PP + cnw + 9, yy);
+      yy += 66;
+    }
+    if(opts.tagline){
+      ctx.font = F(400, SZ.tagline);
+      ctx.fillStyle = inkC;
+      wrap(ctx, opts.tagline, inner).slice(0,2).forEach(l => { ctx.fillText(l, x + PP, yy); yy += 38; });
+      yy += 8;
+    }
+    ctx.font = F(400, SZ.concept);
+    ctx.fillStyle = gray(.86);
+    const body = (img || tall) ? D.concept : `${D.concept} ${D.conceptExtra || ''}`.trim();
+    yy = justify(body, x + PP, yy, inner, 41, (img || tall) ? 12 : 20);
+    const bot = yy + PP - 10;
+    p.h = bot - y;
+    return bot;
+  }
+
+  function secNotes(x, y, w){
+    const p = panel(x, y, w);
+    let yy = y + PP + 22;
+    title('노트 피라미드', x + PP, yy);
+    yy += 40;
+    const inner = w - PP * 2;
+    const layers = [['탑 노트', D.notes.top, .20], ['미들 노트', D.notes.middle, .34], ['베이스 노트', D.notes.base, .50]];
+    const sums = layers.map(([, arr]) => arr.reduce((a, n) => a + n.ratio, 0));
+    const maxSum = Math.max(...sums);
+
+    // 층 비율만큼 폭이 달라지는 계단형 피라미드
+    const bandH = 54;
+    layers.forEach(([kr, , alpha], i) => {
+      const bw = inner * (0.40 + 0.60 * sums[i] / maxSum);
+      const bx = x + PP + (inner - bw) / 2;
+      roundRect(ctx, bx, yy, bw, bandH - 6, 4);
+      ctx.fillStyle = soft(alpha); ctx.fill();
+      ctx.font = S(700, SZ.layerName);
+      ctx.fillStyle = deep;
+      ctx.textAlign = 'center';
+      ctx.fillText(kr, bx + bw / 2 - 26, yy + 34);
+      const lw = ctx.measureText(kr).width;
+      ctx.font = N(700, SZ.layerPct);
+      ctx.fillStyle = inkC;
+      ctx.textAlign = 'left';
+      ctx.fillText(sums[i] + '%', bx + bw / 2 - 26 + lw / 2 + 12, yy + 34);
+      ctx.textAlign = 'left';
+      yy += bandH;
+    });
+    yy += 62;
+
+    // 층별 향료 (앞에 어코드 색점)
+    layers.forEach(([kr, arr], i) => {
+      ctx.font = S(700, SZ.noteEn + 3);
+      ctx.fillStyle = deep;
+      ctx.fillText(kr, x + PP, yy);
+      yy += 46;
+      arr.forEach(n => {
+        ctx.beginPath(); ctx.arc(x + PP + 7, yy - 9, 7, 0, 7);
+        ctx.fillStyle = noteColor(n); ctx.fill();
+        fit(400, SZ.noteName, n.ko, inner - 140);
+        ctx.fillStyle = INK;
+        ctx.fillText(n.ko, x + PP + 24, yy);
+        ctx.textAlign = 'right';
+        ctx.font = N(600, SZ.noteRatio);
+        ctx.fillStyle = gray(.6);
+        ctx.fillText(n.ratio + '%', x + PP + inner, yy);
+        ctx.textAlign = 'left';
+        ctx.font = F(400, SZ.noteEn);
+        ctx.fillStyle = gray(.58);
+        ctx.fillText(n.en, x + PP + 24, yy + 27);
+        yy += 68;
+      });
+      yy += 16;
+    });
+    const bot = yy + PP - 24;
+    p.h = bot - y;
+    return bot;
+  }
+
+  /* ── 향의 시간 곡선 ── */
+  function secCurve(x, y, w, panelY, panelH){
+    const pTop = panelY === undefined ? y : panelY;
+    const p = panel(x, pTop, w);
+    // 제목은 다른 칸과 같은 높이에, 그래프만 남은 공간의 가운데로
+    let yy = pTop + PP + 22;
+    title('향의 시간 곡선', x + PP, yy);
+    const GRAPH_BLOCK = 290;
+    if(panelH === undefined){
+      yy += 40;
+    } else {
+      const top = yy + 20, bot = pTop + panelH - PP;
+      yy = top + Math.max(0, (bot - top - GRAPH_BLOCK) / 2);
+    }
+    const inner = w - PP * 2;
+    const maxH = [3, 5, 7, 9, 11][(D.power || 3) - 1];
+    const gh = 190, gx = x + PP + 34, gw = inner - 34;
+    const sums = [D.notes.top, D.notes.middle, D.notes.base].map(a => a.reduce((s, n) => s + n.ratio, 0));
+    const pw = (D.power || 3);
+    const shape = [
+      { rise:.04, decay:.5 + pw * .08 },
+      { rise:.35, decay:1.8 + pw * .40 },
+      { rise:1.0, decay:3.5 + pw * 1.2 }
+    ];
+    const val = (i, t) => sums[i] * (1 - Math.exp(-t / shape[i].rise)) * Math.exp(-t / shape[i].decay);
+    let peak = 0;
+    for(let i = 0; i < 3; i++) for(let t = 0; t <= maxH; t += .05) peak = Math.max(peak, val(i, t));
+
+    // 눈금
+    ctx.strokeStyle = gray(.1); ctx.lineWidth = 1.2;
+    [0, .5, 1].forEach(k => {
+      const ly = yy + gh - gh * k;
+      ctx.beginPath(); ctx.moveTo(gx, ly); ctx.lineTo(gx + gw, ly); ctx.stroke();
+    });
+    ctx.font = F(400, SZ.traitCap);
+    ctx.fillStyle = gray(.45);
+    ctx.textAlign = 'right';
+    ctx.fillText('강', gx - 10, yy + 8);
+    ctx.fillText('약', gx - 10, yy + gh + 6);
+    ctx.textAlign = 'left';
+
+    // 곡선
+    const cols = [soft(.42), soft(.65), soft(.92)];
+    [0, 1, 2].forEach(i => {
+      ctx.beginPath();
+      ctx.moveTo(gx, yy + gh);
+      for(let s = 0; s <= 80; s++){
+        const t = maxH * s / 80;
+        const v = val(i, t) / peak;
+        ctx.lineTo(gx + gw * s / 80, yy + gh - gh * v);
+      }
+      ctx.lineTo(gx + gw, yy + gh);
+      ctx.closePath();
+      ctx.fillStyle = cols[i].replace(/[\d.]+\)$/, '0.16)');
+      ctx.fill();
+      ctx.beginPath();
+      for(let s = 0; s <= 80; s++){
+        const t = maxH * s / 80;
+        const v = val(i, t) / peak;
+        const px = gx + gw * s / 80, py = yy + gh - gh * v;
+        s ? ctx.lineTo(px, py) : ctx.moveTo(px, py);
+      }
+      ctx.strokeStyle = cols[i]; ctx.lineWidth = 2.6; ctx.stroke();
+    });
+    yy += gh + 26;
+
+    // 시간 눈금
+    ctx.font = F(400, SZ.traitCap);
+    ctx.fillStyle = gray(.5);
+    [0, .5, 1].forEach(k => {
+      const t = Math.round(maxH * k);
+      ctx.textAlign = k === 0 ? 'left' : k === 1 ? 'right' : 'center';
+      ctx.fillText(k === 0 ? '뿌린 직후' : t + '시간', gx + gw * k, yy);
+    });
+    ctx.textAlign = 'left';
+    yy += 34;
+
+    // 범례
+    ['탑 노트', '미들 노트', '베이스 노트'].forEach((kr, i) => {
+      const lx = x + PP + i * (inner / 3);
+      ctx.fillStyle = cols[i];
+      roundRect(ctx, lx, yy - 12, 22, 6, 3); ctx.fill();
+      ctx.font = F(400, SZ.traitCap + 2);
+      ctx.fillStyle = gray(.65);
+      ctx.fillText(kr, lx + 30, yy - 4);
+    });
+    const bot = yy + PP;
+    p.h = panelH === undefined ? bot - y : panelH;
+    return p.y + p.h;
+  }
+  const CURVE_H = PP * 2 + 312;   // 곡선 칸의 고정 높이
+
+  function secAccord(x, y, w){
+    const p = panel(x, y, w);
+    let yy = y + PP + 22;
+    title('메인 어코드', x + PP, yy);
+    yy += 34;
+    const inner = w - PP * 2;
+    const R = Math.min(tall ? 150 : 132, inner / 2 - 30);
+    const cx = x + PP + inner / 2, cy = yy + R + 16;
+    radar(cx, cy, R, accs);
+    yy = cy + R + 62;
+    accs.forEach((a, i) => {
+      ctx.beginPath(); ctx.arc(x + PP + 12, yy - 9, 12, 0, 7);
+      ctx.fillStyle = a.color; ctx.fill();
+      ctx.textAlign = 'center';
+      ctx.font = N(700, 15);
+      ctx.fillStyle = 'rgba(255,255,255,.96)';
+      ctx.fillText(String(i + 1), x + PP + 12, yy - 4);
+      ctx.textAlign = 'left';
+      fit(400, SZ.accName, a.name, inner - 150);
+      ctx.fillStyle = INK;
+      ctx.fillText(a.name, x + PP + 36, yy);
+      ctx.textAlign = 'right';
+      ctx.font = N(600, SZ.accPct);
+      ctx.fillStyle = inkC;
+      ctx.fillText(a.pct + '%', x + PP + inner, yy);
+      ctx.textAlign = 'left';
+      bar(x + PP + 36, yy + 18, inner - 36, 13, a.pct / 100, a.color);
+      yy += 92;
+    });
+    const bot = yy + PP - 24;
+    p.h = bot - y;
+    return bot;
+  }
+
+  function secTraits(x, y, w){
+    const p = panel(x, y, w);
+    let yy = y + PP + 22;
+    title('향의 성격', x + PP, yy);
+    yy += 44;
+    const inner = w - PP * 2;
+    D.traitsBar.forEach(t => {
+      ctx.font = F(400, SZ.traitName);
+      ctx.fillStyle = gray(.6);
+      ctx.fillText(t.name, x + PP, yy);
+      ctx.textAlign = 'right';
+      ctx.font = N(600, SZ.traitPct);
+      ctx.fillStyle = INK;
+      ctx.fillText(t.pct + '%', x + PP + inner, yy + 2);
+      ctx.textAlign = 'left';
+      bar(x + PP, yy + 16, inner, 13, t.pct / 100, soft(.75));
+      yy += 46;
+      const note = t.name === '지속력' ? D.longevity : t.name === '확산력' ? D.sillage : null;
+      ctx.font = F(400, SZ.traitCap);
+      ctx.fillStyle = gray(.55);
+      ctx.fillText(t.left, x + PP, yy);
+      ctx.textAlign = 'right';
+      if(note){ ctx.font = F(400, SZ.traitCap + 3); ctx.fillStyle = gray(.75); }
+      ctx.fillText(note || t.right, x + PP + inner, yy);
+      ctx.textAlign = 'left';
+      yy += 50;
+    });
+    const bot = yy + PP - 14;
+    p.h = bot - y;
+    return bot;
+  }
+
+  function secSeason(x, y, w){
+    const p = panel(x, y, w);
+    let yy = y + PP + 22;
+    title('어울리는 계절', x + PP, yy);
+    yy += 48;
+    const inner = w - PP * 2;
+    const row = (label, pct, alpha) => {
+      ctx.font = F(400, SZ.seasonName);
+      ctx.fillStyle = gray(.6);
+      ctx.fillText(label, x + PP, yy + 4);
+      ctx.textAlign = 'right';
+      ctx.font = N(600, SZ.seasonPct);
+      ctx.fillStyle = INK;
+      ctx.fillText(pct + '%', x + PP + inner, yy + 4);
+      ctx.textAlign = 'left';
+      bar(x + PP + 66, yy - 9, inner - 66 - 80, 13, pct / 100, soft(alpha));
+      yy += 46;
+    };
+    D.seasonFit.forEach(s => row(s.name, s.pct, .72));
+    yy += 6;
+    D.dayNight.forEach(t => row(t.name, t.pct, .42));
+    yy += 18;
+    ctx.strokeStyle = gray(.09); ctx.lineWidth = 1.3;
+    ctx.beginPath(); ctx.moveTo(x + PP, yy - 20); ctx.lineTo(x + PP + inner, yy - 20); ctx.stroke();
+    yy += 22;
+    ctx.font = F(400, SZ.statKey);
+    ctx.fillStyle = gray(.58);
+    ctx.fillText('가장 어울리는 때', x + PP, yy);
+    yy += 34;
+    fit(400, SZ.statVal, D.season + ' · ' + D.time, inner);
+    ctx.fillStyle = inkC;
+    ctx.fillText(D.season + ' · ' + D.time, x + PP, yy);
+    const bot = yy + PP - 12;
+    p.h = bot - y;
+    return bot;
+  }
+
+  function secSimilar(x, y, w){
+    const p = panel(x, y, w);
+    let yy = y + PP + 22;
+    title('비슷한 향수', x + PP, yy);
+    yy += 50;
+    const inner = w - PP * 2;
+    const list = D.similar.slice(0, 3);
+    const cols = (w > 900 && list.length > 1) ? list.length : 1;
+    const cw = (inner - (cols - 1) * 30) / cols;
+    let maxBot = yy;
+    list.forEach((sp, i) => {
+      const cx = x + PP + (i % cols) * (cw + 30);
+      let cy = yy + (cols === 1 ? i * 82 : 0);
+      if(cols === 1 && i){
+        ctx.strokeStyle = gray(.08); ctx.lineWidth = 1.3;
+        ctx.beginPath(); ctx.moveTo(x + PP, cy - 30); ctx.lineTo(x + PP + inner, cy - 30); ctx.stroke();
+      }
+      if(cols > 1 && i){
+        ctx.strokeStyle = gray(.08); ctx.lineWidth = 1.3;
+        ctx.beginPath(); ctx.moveTo(cx - 15, cy - 26); ctx.lineTo(cx - 15, cy + 52); ctx.stroke();
+      }
+      ctx.font = F(400, SZ.simBrand);
+      ctx.fillStyle = gray(.55);
+      ctx.fillText(sp.brand + (sp.year ? '  ·  ' + sp.year : ''), cx, cy);
+      fit(400, SZ.simName, sp.name, cw - 100);
+      ctx.fillStyle = INK;
+      ctx.fillText(sp.name, cx, cy + 38);
+      ctx.textAlign = 'right';
+      ctx.font = N(600, SZ.simPct);
+      ctx.fillStyle = inkC;
+      ctx.fillText(sp.match + '%', cx + cw, cy + 30);
+      ctx.textAlign = 'left';
+      maxBot = Math.max(maxBot, cy + 38);
+    });
+    const bot = maxBot + PP + 14;
+    p.h = bot - y;
+    return bot;
+  }
+
+  /* 밀랍 봉인처럼 찍는 표식 */
+  const seal = (cx, cy, r) => {
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, 7);
+    ctx.fillStyle = soft(.16); ctx.fill();
+    ctx.strokeStyle = soft(.55); ctx.lineWidth = 1.6; ctx.stroke();
+    ctx.beginPath(); ctx.arc(cx, cy, r - 6, 0, 7);
+    ctx.strokeStyle = soft(.3); ctx.lineWidth = 1; ctx.stroke();
+    ctx.textAlign = 'center';
+    ctx.font = S(700, Math.round(r * 0.9));
+    ctx.fillStyle = deep;
+    ctx.fillText((D.family || '향')[0], cx, cy + r * 0.32);
+    ctx.textAlign = 'left';
+  };
+  /* 상징색 스와치 */
+  const swatch = (sx, sy) => {
+    ctx.beginPath(); ctx.arc(sx + 9, sy - 6, 9, 0, 7);
+    ctx.fillStyle = color; ctx.fill();
+    ctx.strokeStyle = gray(.15); ctx.lineWidth = 1; ctx.stroke();
+    ctx.font = N(600, SZ.statKey);
+    ctx.fillStyle = gray(.55);
+    const hex = (opts.color || '#E9A6B8').toUpperCase();
+    ctx.fillText(hex, sx + 26, sy);
+    const fams = (D.colorFams || []).slice(0,3).join(' · ');
+    if(fams){
+      ctx.font = F(400, SZ.statKey);
+      ctx.fillStyle = gray(.45);
+      ctx.fillText('→ ' + fams, sx + 26 + ctx.measureText(hex).width + 34, sy);
+    }
+  };
+
+  /* ══════════ 머리띠 ══════════ */
+  let y = M;
+  const hx = M + (tall ? 26 : 44);
+  const headP = panel(M, y, W);
+  if(tall){
+    fit(700, SZ.name, D.nameKo, W - 60, SERIF);
+    setLS(ctx, '0px');
+    ctx.fillStyle = inkC;
+    ctx.fillText(D.nameKo, hx, y + 74);
+    setLS(ctx, TRACK);
+    ctx.font = F(400, SZ.nameEn);
+    setLS(ctx, '3px');
+    ctx.fillStyle = soft(.62);
+    ctx.fillText(D.nameEn, hx, y + 108);
+    setLS(ctx, TRACK);
+    const heads = [['계열', D.family], ['농도', D.concentration.split(' (')[0]], ['지속력', D.longevity]];
+    const hw = (W - 52) / 3;
+    heads.forEach(([k, v], i) => {
+      const sx = hx + i * hw;
+      ctx.font = F(400, SZ.statKey);
+      ctx.fillStyle = gray(.58);
+      ctx.fillText(k, sx, y + 150);
+      fit(400, SZ.statVal - 2, v, hw - 18);
+      ctx.fillStyle = i === 0 ? inkC : gray(.86);
+      ctx.fillText(v, sx, y + 184);
+    });
+    seal(M + W - 52, y + 62, 30);
+    ctx.textAlign = 'center';
+    ctx.font = N(600, SZ.sign);
+    ctx.fillStyle = gray(.4);
+    ctx.fillText('No. ' + (D.serial || '0000'), M + W - 52, y + 112);
+    ctx.textAlign = 'left';
+    swatch(hx, y + 226);
+    headP.h = 250;
+  } else {
+    const hRight = M + W - 44 - 128, hSplit = M + Math.round(W * 0.54);
+    fit(700, SZ.name, D.nameKo, hSplit - hx - 30, SERIF);
+    setLS(ctx, '0px');
+    ctx.fillStyle = inkC;
+    ctx.fillText(D.nameKo, hx, y + 90);
+    setLS(ctx, TRACK);
+    ctx.font = F(400, SZ.nameEn);
+    setLS(ctx, '3px');
+    ctx.fillStyle = soft(.62);
+    ctx.fillText(D.nameEn, hx, y + 126);
+    setLS(ctx, TRACK);
+    ctx.strokeStyle = soft(.4); ctx.lineWidth = 1.6;
+    ctx.beginPath(); ctx.moveTo(hx, y + 148); ctx.lineTo(hx + 88, y + 148); ctx.stroke();
+    const heads = [['계열', D.family], ['농도', D.concentration.split(' (')[0]], ['지속력', D.longevity]];
+    const hw = (hRight - hSplit) / heads.length;
+    heads.forEach(([k, v], i) => {
+      const sx = hSplit + i * hw;
+      ctx.font = F(400, SZ.statKey);
+      ctx.fillStyle = gray(.58);
+      ctx.fillText(k, sx, y + 86);
+      fit(400, SZ.statVal, v, hw - 26);
+      ctx.fillStyle = i === 0 ? inkC : gray(.86);
+      ctx.fillText(v, sx, y + 126);
+      if(i){
+        ctx.strokeStyle = gray(.09); ctx.lineWidth = 1.3;
+        ctx.beginPath(); ctx.moveTo(sx - 14, y + 64); ctx.lineTo(sx - 14, y + 138); ctx.stroke();
+      }
+    });
+    seal(M + W - 44 - 44, y + 78, 34);
+    ctx.textAlign = 'center';
+    ctx.font = N(600, SZ.sign);
+    ctx.fillStyle = gray(.4);
+    ctx.fillText('No. ' + (D.serial || '0000'), M + W - 44 - 44, y + 138);
+    ctx.textAlign = 'left';
+    swatch(hx, y + 182);
+    headP.h = 208;
+  }
+  y += headP.h + G;
+
+  /* ══════════ 배치 ══════════ */
+  if(tall){
+    y = secProfile(M, y, W) + G;
+    y = secNotes(M, y, W) + G;
+    y = secAccord(M, y, W) + G;
+    y = secCurve(M, y, W) + G;
+    y = secTraits(M, y, W) + G;
+    y = secSeason(M, y, W) + G;
+    y = secSimilar(M, y, W);
+  } else {
+    const aW = 500, bW = 470, cW = W - aW - bW - G * 2;
+    const r1 = Math.max(
+      secProfile(M, y, aW),
+      secNotes(M + aW + G, y, bW),
+      secAccord(M + aW + bW + G * 2, y, cW)
+    );
+    panels.slice(-3).forEach(p => p.h = r1 - p.y);
+    y = r1 + G;
+    const dW = 640, eW = 420, fW = W - dW - eW - G * 2;
+    const i0 = panels.length;
+    const t2 = secTraits(M + dW + G, y, eW);
+    const s2 = secSeason(M + dW + eW + G * 2, y, fW);
+    const rowH = Math.max(t2 - y, s2 - y, CURVE_H);
+    secCurve(M, y, dW, y, rowH);
+    panels[i0].h = rowH; panels[i0 + 1].h = rowH;
+    y = y + rowH + G;
+    y = secSimilar(M, y, W);
+  }
+
+  const CARD_H = Math.round(y + M);
+
+  /* ══════════ 합치기 ══════════ */
+  canvas.width = CARD_W;
+  canvas.height = CARD_H;
+  const out = canvas.getContext('2d');
+  setLS(out, TRACK);
+
+  const bg = out.createLinearGradient(0, 0, CARD_W, CARD_H);
+  bg.addColorStop(0, tint(color, .20));
+  bg.addColorStop(1, tint(color, .40));
+  out.fillStyle = bg;
+  out.fillRect(0, 0, CARD_W, CARD_H);
+
+  out.strokeStyle = soft(.07); out.lineWidth = 1;
+  for(let gx = 0; gx < CARD_W; gx += 40){ out.beginPath(); out.moveTo(gx, 0); out.lineTo(gx, CARD_H); out.stroke(); }
+  for(let gy = 0; gy < CARD_H; gy += 40){ out.beginPath(); out.moveTo(0, gy); out.lineTo(CARD_W, gy); out.stroke(); }
+
+  panels.forEach(pn => {
+    roundRect(out, pn.x, pn.y, pn.w, pn.h, 16);
+    out.fillStyle = 'rgba(255,255,255,.86)';
+    out.fill();
+    out.strokeStyle = 'rgba(27,30,28,.07)';
+    out.lineWidth = 1.4;
+    out.stroke();
+  });
+
+  out.drawImage(tmp, 0, 0);
+  out.fillStyle = color;
+  out.fillRect(0, 0, CARD_W, 10);
+
+  out.textAlign = 'right';
+  out.font = F(400, SZ.sign);
+  out.fillStyle = gray(.3);
+  out.fillText('캐릭터 향수 카드', CARD_W - M, CARD_H - 20);
+  out.textAlign = 'left';
+
+  return canvas;
+}
+</script>
+<script>/* ============================================================
+   app.js — 화면 조작
+   ============================================================ */
+const $ = s => document.querySelector(s);
+const state = {
+  image:null, reroll:0, data:null, lastInput:null,
+  // 좁은 화면에서는 세로형 카드로 그립니다
+  layout: (window.matchMedia && window.matchMedia('(max-width: 900px)').matches) ? 'tall' : 'wide'
+};
+
+/* ---------- 칩 ---------- */
+function chips(el, list, name, max){
+  el.innerHTML = list.map((t,i)=>
+    `<label class="chip"><input type="checkbox" name="${name}" value="${t}" id="${name}${i}"><span>${t}</span></label>`).join('');
+  if(max){
+    el.addEventListener('change', () => {
+      const on = [...el.querySelectorAll('input:checked')];
+      if(on.length > max) on[0].checked = false;
+    });
+  }
+}
+chips($('#traits'), TRAITS, 'trait', 3);
+chips($('#prefs'), FAMILIES, 'pref', 3);
+const picked = n => [...document.querySelectorAll(`input[name=${n}]:checked`)].map(i => i.value);
+
+/* ---------- 상징색 ---------- */
+const colorEl = $('#color'), hexEl = $('#hex');
+colorEl.addEventListener('input', () => { hexEl.value = colorEl.value.toUpperCase(); paintAccent(); });
+hexEl.addEventListener('change', () => {
+  const v = hexEl.value.trim().replace(/^#?/, '#');
+  if(/^#[0-9a-f]{6}$/i.test(v)){ colorEl.value = v; paintAccent(); }
+  hexEl.value = colorEl.value.toUpperCase();
+});
+function paintAccent(){
+  const root = document.documentElement.style;
+  root.setProperty('--pick', colorEl.value);
+  root.setProperty('--bg', tint(colorEl.value, .10));   // 화면 배경도 상징색을 옅게 따라갑니다
+  root.setProperty('--card-bg', tint(colorEl.value, .18));
+}
+paintAccent();
+
+/* ---------- 이미지 ---------- */
+const drop = $('#drop'), fileInput = $('#file');
+drop.addEventListener('click', e => { if(!e.target.closest('#clearImg')) fileInput.click(); });
+drop.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); fileInput.click(); } });
+drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('over'); });
+drop.addEventListener('dragleave', () => drop.classList.remove('over'));
+drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('over'); if(e.dataTransfer.files[0]) loadImage(e.dataTransfer.files[0]); });
+fileInput.addEventListener('change', e => { if(e.target.files[0]) loadImage(e.target.files[0]); });
+$('#clearImg').addEventListener('click', e => {
+  e.stopPropagation();
+  state.image = null; fileInput.value = '';
+  $('#thumb').classList.remove('on'); $('#dropIdle').style.display = '';
+  $('#imgCtl').classList.remove('on');
+  if(state.data) paint();
+});
+
+async function loadImage(file){
+  if(!file.type.startsWith('image/')) return toast('이미지 파일만 넣을 수 있습니다.');
+  try{
+    // 휴대폰 사진은 회전 정보가 파일에 따로 들어 있어, 그걸 반영해 펴 둡니다
+    const el = await decodeUpright(file);
+    state.image = { el, zoom:1, ox:0, oy:0 };
+    $('#thumbImg').src = el.toDataURL ? el.toDataURL('image/jpeg', .7) : el.src;
+    $('#thumbName').textContent = file.name;
+    $('#thumb').classList.add('on');
+    $('#dropIdle').style.display = 'none';
+    $('#imgCtl').classList.add('on');
+    ['zoom','ox','oy'].forEach(k => $('#' + k).value = k === 'zoom' ? 1 : 0);
+    if(state.data) paint();
+  }catch(err){
+    toast('이미지를 읽지 못했습니다.');
+  }
+}
+
+/* 회전 정보를 반영해 캔버스로 펴 담습니다 */
+async function decodeUpright(file){
+  if(typeof createImageBitmap === 'function'){
+    try{
+      const bmp = await createImageBitmap(file, { imageOrientation:'from-image' });
+      const cv = document.createElement('canvas');
+      cv.width = bmp.width; cv.height = bmp.height;
+      cv.getContext('2d').drawImage(bmp, 0, 0);
+      if(bmp.close) bmp.close();
+      return cv;
+    }catch(e){ /* 아래 방식으로 대체 */ }
+  }
+  const url = URL.createObjectURL(file);
+  const el = await new Promise((res, rej) => {
+    const i = new Image();
+    i.onload = () => res(i);
+    i.onerror = rej;
+    i.src = url;
+  });
+  const cv = document.createElement('canvas');
+  cv.width = el.naturalWidth; cv.height = el.naturalHeight;
+  cv.getContext('2d').drawImage(el, 0, 0);
+  URL.revokeObjectURL(url);
+  return cv;
+}
+['zoom','ox','oy'].forEach(k => $('#' + k).addEventListener('input', () => {
+  if(!state.image) return;
+  state.image[k] = Number($('#' + k).value);
+  if(state.data) paint();
+}));
+
+/* ---------- 조향 ---------- */
+function gather(){
+  return {
+    name: $('#charName').value.trim(),
+    desc: $('#desc').value.trim(),
+    wish: $('#wish').value.trim(),
+    traits: picked('trait'),
+    prefs: picked('pref'),
+    season: $('#season').value,
+    power: Number($('#power').value),
+    color: colorEl.value,
+    reroll: state.reroll
+  };
+}
+
+$('#make').addEventListener('click', async () => {
+  const input = gather();
+  if(!input.name && !input.traits.length && !input.desc){
+    return toast('이름·성격 키워드·설명 중 하나는 넣어주세요.');
+  }
+  state.reroll = 0;
+  input.reroll = 0;
+
+  state.lastInput = input;
+  state.data = blend(input);
+  await paint();
+  showStep('result');
+});
+
+$('#reroll').addEventListener('click', async () => {
+  if(!state.data) return;
+  state.reroll++;
+  state.data = blend({ ...gather(), reroll: state.reroll });
+  await paint();
+});
+
+async function paint(){
+  await drawCard($('#card'), state.data, {
+    charName: $('#charName').value.trim(),
+    tagline: $('#tagline').value.trim(),
+    color: colorEl.value,
+    image: state.image,
+    layout: state.layout
+  });
+  $('#flip').textContent = state.layout === 'tall' ? '가로형으로' : '세로형으로';
+  renderTips(state.data);
+}
+
+function renderTips(D){
+  $('#tips').innerHTML =
+    `<p class="accord">${esc(D.accord)}</p>` +
+    `<h3>노트를 이렇게 고른 이유</h3><ul>${
+      [...D.notes.top, ...D.notes.middle, ...D.notes.base]
+        .map(n => `<li><b>${esc(n.ko)}</b> ${esc(n.why)}</li>`).join('')}</ul>` +
+    `<h3>직접 배합한다면</h3><ul>${D.tips.map(t => `<li>${esc(t)}</li>`).join('')}</ul>`;
+}
+
+/* ---------- 저장 · 공유 ---------- */
+$('#save').addEventListener('click', () => {
+  const c = $('#card');
+  c.toBlob(blob => {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `${($('#charName').value.trim() || 'character')}_perfume.png`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  }, 'image/png');
+});
+
+$('#share').addEventListener('click', () => {
+  const D = state.data; if(!D) return;
+  const who = $('#charName').value.trim();
+  const text = `${who ? who + '의 향수 — ' : ''}${D.nameKo} (${D.family})\n`
+    + `탑 ${D.notes.top.map(n=>n.ko).join('·')}\n`
+    + `미들 ${D.notes.middle.map(n=>n.ko).join('·')}\n`
+    + `베이스 ${D.notes.base.map(n=>n.ko).join('·')}\n#캐릭터조향`;
+  window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(text), '_blank', 'noopener');
+  toast('이미지는 자동으로 붙지 않습니다. 저장한 카드를 직접 첨부해 주세요.');
+});
+
+$('#aiWrite').addEventListener('click', async () => {
+  if(!state.lastInput) return;
+  const hasKey = AI_PROXY || ($('#aiKey') && $('#aiKey').value.trim());
+  if(!hasKey) return toast('소개글을 새로 쓰려면 "더 자세히 정하기" 안에 API 키를 넣어주세요.');
+  await writeWithAI(state.lastInput);
+});
+
+$('#flip').addEventListener('click', async () => {
+  state.layout = state.layout === 'tall' ? 'wide' : 'tall';
+  await paint();
+});
+
+$('#restart').addEventListener('click', () => showStep('form'));
+
+// 원본 크기(가로 1400) 그대로 새 탭에서 보기
+$('#zoom2x').addEventListener('click', () => {
+  $('#card').toBlob(blob => {
+    const url = URL.createObjectURL(blob);
+    const w = window.open(url, '_blank', 'noopener');
+    if(!w) toast('팝업이 막혀 있습니다. 이미지 저장을 눌러 확인해 주세요.');
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
+  }, 'image/png');
+});
+
+function showStep(which){
+  $('#stepForm').style.display   = which === 'form' ? '' : 'none';
+  $('#stepResult').style.display = which === 'result' ? '' : 'none';
+  document.querySelector('.wrap').classList.toggle('wide', which === 'result');
+  window.scrollTo({ top:0, behavior:'smooth' });
+  if(which === 'form') $('#charName').focus();
+}
+
+/* ---------- 문장 새로 받아오기 (선택) ----------
+   배합·그래프는 그대로 두고 설명 문장만 새로 받아옵니다.
+   키가 없거나 실패하면 사이트가 만든 문장을 그대로 씁니다. */
+const AI_MODEL = 'claude-haiku-4-5-20251001';   // 더 정교하게 쓰려면 'claude-sonnet-5'
+// 프록시 주소를 넣으면 방문자가 키를 넣지 않아도 됩니다 (proxy/cloudflare-worker.js 참고)
+const AI_PROXY = '';
+
+// 프록시를 쓰면 방문자에게 키를 물어볼 이유가 없으니 입력칸만 숨깁니다
+if(AI_PROXY && $('#aiKey')) $('#aiKey').style.display = 'none';
+
+/* 서술 관점 — 같은 배합이라도 시점과 어조가 달라집니다 */
+const VOICES = {
+  perfumer: { label:'조향사의 소개글',
+    rule:'조향사가 자기가 만든 향을 담담하게 소개하는 어조로 쓴다. 왜 그렇게 배합했는지 한 번은 언급한다.' },
+  review:   { label:'시향 후기',
+    rule:'직접 뿌려 보고 쓴 후기처럼 쓴다. "손목에 뿌리고 30분쯤" 같은 시간과 몸의 감각을 넣는다. 좋기만 한 게 아니라 호불호가 갈릴 지점도 한 번 짚는다.' },
+  first:    { label:'캐릭터 1인칭',
+    rule:'캐릭터가 직접 말하는 1인칭으로 쓴다. "나는", "내" 같은 말을 쓰고, 향을 자기 이야기처럼 풀어낸다. 존댓말 대신 캐릭터에게 어울리는 말투를 쓴다.' },
+  beside:   { label:'곁에 있는 사람',
+    rule:'그 캐릭터를 곁에서 지켜보는 사람의 시점으로 쓴다. "그 사람이 지나가면" 처럼, 향을 통해 인물을 묘사한다.' },
+  letter:   { label:'향수에 딸린 쪽지',
+    rule:'향수 상자에 함께 든 손편지처럼 쓴다. 받는 사람에게 건네는 말투로, 왜 이 향을 골랐는지 짧게 적는다.' },
+  scene:    { label:'장면 묘사',
+    rule:'소설의 한 문단처럼 장면부터 그린다. 향료 이름은 그 장면 안의 사물이나 공기로 녹여 넣는다. 설명조를 피한다.' },
+  label:    { label:'라벨 카피',
+    rule:'향수 라벨이나 카탈로그에 실릴 짧은 카피처럼 쓴다. 3~4문장으로 더 짧게, 문장을 끊어서 단정하게 쓴다.' }
+};
+
+if($('#aiVoice')){
+  $('#aiVoice').insertAdjacentHTML('beforeend',
+    Object.entries(VOICES).map(([k, v]) => `<option value="${k}">${v.label}</option>`).join(''));
+}
+
+const AI_BASE = `너는 향수에 대한 글을 쓰는 사람이다. 주어진 캐릭터와 배합 정보를 읽고 그 향에 대한 글을 쓴다.
+
+규칙:
+- 한국어, 4~6문장. 줄바꿈·목록·제목 없이 한 문단으로만 쓴다.
+- 주어진 향료 이름만 쓴다. 목록에 없는 향료를 지어내지 않는다. 비율 숫자는 옮기지 않아도 된다.
+- 캐릭터의 성격·특징에 적힌 구체적인 낱말을 최소 하나는 향과 연결해 언급한다.
+- 은유와 장면 묘사를 쓴다. 다만 향과 무관한 설정 요약이나 줄거리는 쓰지 않는다.
+- 첫 문장은 매번 다르게 시작한다. "○○ 계열의 향입니다" 같은 정형구로 시작하지 않는다.
+- 과장된 광고 문구("최고의", "완벽한")를 쓰지 않는다. 담담하게 쓴다.
+- 시간의 흐름(첫인상 → 중반 → 잔향)이 한 번은 드러나게 한다.
+- 머리말이나 설명 없이 본문만 출력한다.`;
+
+async function writeWithAI(input){
+  const key = ($('#aiKey') && $('#aiKey').value.trim()) || '';
+  if((!key && !AI_PROXY) || !state.data) return;
+  const D = state.data;
+  const sel = $('#aiVoice') ? $('#aiVoice').value : 'perfumer';
+  const keys = Object.keys(VOICES);
+  const voice = sel === 'random' ? keys[Math.floor(Math.random() * keys.length)] : sel;
+  const btn = $('#aiWrite');
+  btn.disabled = true; btn.textContent = '문장 쓰는 중…';
+  try{
+    const notes = [['탑', D.notes.top], ['미들', D.notes.middle], ['베이스', D.notes.base]]
+      .map(([k, arr]) => `${k}: ` + arr.map(n => `${n.ko}(${n.en}) ${n.ratio}%`).join(', ')).join(' / ');
+    const user = [
+      `캐릭터 이름: ${input.name || '(없음)'}`,
+      `캐치프레이즈: ${$('#tagline').value.trim() || '(없음)'}`,
+      `성격·특징: ${input.desc || '(없음)'}`,
+      `성격 키워드: ${input.traits.join(', ') || '(없음)'}`,
+      `떠오르는 향 느낌: ${input.wish || '(없음)'}`,
+      `상징색: ${input.color}`,
+      '',
+      `향수 이름: ${D.nameKo} (${D.nameEn})`,
+      `계열: ${D.family}`,
+      `노트: ${notes}`,
+      `메인 어코드: ${D.accords.slice(0,4).map(x => x.name).join(', ')}`,
+      `지속 ${D.longevity} · 확산 ${D.sillage} · ${D.season} · ${D.time}`
+    ].join('\n');
+
+    // 프록시가 있으면 그쪽으로, 없으면 방문자 키로 직접 부릅니다
+    const res = AI_PROXY
+      ? await fetch(AI_PROXY, {
+          method:'POST',
+          headers:{ 'Content-Type':'application/json' },
+          body: JSON.stringify({ user, voice })   // 모델과 규칙은 프록시가 정합니다
+        })
+      : await fetch('https://api.anthropic.com/v1/messages', {
+          method:'POST',
+          headers:{
+            'Content-Type':'application/json',
+            'x-api-key':key,
+            'anthropic-version':'2023-06-01',
+            'anthropic-dangerous-direct-browser-access':'true'
+          },
+          body: JSON.stringify({
+            model: AI_MODEL, max_tokens: 500,
+            system: AI_BASE + '\n- ' + (VOICES[voice] || VOICES.perfumer).rule,
+            messages: [{ role:'user', content:user }]
+          })
+        });
+    const j = await res.json();
+    if(!res.ok) throw new Error((j.error && j.error.message) || ('HTTP ' + res.status));
+    const text = (j.content || []).map(b => b.text || '').join('').trim();
+    if(text){
+      state.data.concept = text;
+      state.data.conceptExtra = '';
+      await paint();
+      toast(`'${VOICES[voice].label}' 시점으로 다시 썼습니다.`);
+    }
+  }catch(err){
+    toast('소개글을 받지 못해 원래 문장을 그대로 두었습니다. (' + err.message + ')');
+  }finally{
+    btn.disabled = false; btn.textContent = '소개글 새로 쓰기';
+  }
+}
+
+/* ---------- 잡동사니 ---------- */
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let toastTimer;
+function toast(msg){
+  const el = $('#toast');
+  el.textContent = msg; el.classList.add('on');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('on'), 3600);
+}
+</script>
+</body>
+</html>
