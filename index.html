@@ -2097,7 +2097,7 @@ function showStep(which){
    키가 없거나 실패하면 사이트가 만든 문장을 그대로 씁니다. */
 const AI_MODEL = 'claude-haiku-4-5-20251001';   // 더 정교하게 쓰려면 'claude-sonnet-5'
 // 프록시 주소를 넣으면 방문자가 키를 넣지 않아도 됩니다 (proxy/cloudflare-worker.js 참고)
-const AI_PROXY = '';
+const AI_PROXY = 'https://perfume-proxy.gnuhbic9303.workers.dev';
 
 // 프록시를 쓰면 방문자에게 키를 물어볼 이유가 없으니 입력칸만 숨깁니다
 if(AI_PROXY && $('#aiKey')) $('#aiKey').style.display = 'none';
