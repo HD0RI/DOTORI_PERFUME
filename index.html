@@ -213,12 +213,14 @@
         </div>
 
         <div class="field" id="aiKeyField" style="border-top:1px solid var(--line);padding-top:18px;margin-top:22px">
-          <label class="lbl" for="aiKey">API 키 <em>(선택)</em></label>
-          <p class="note" style="margin:0 0 10px">
-            API를 사용할 시 문장이 매번 다르게 작성됩니다. 비워두실 경우 사용 가능하나
-            사이트 안에서 문장을 만듭니다. 키는 입력창에만 머물고 저장되지 않습니다.
-          </p>
-          <input type="password" id="aiKey" placeholder="sk-ant-... (비워두면 사용 안 함)">
+          <div id="aiKeyBox">
+            <label class="lbl" for="aiKey">API 키 <em>(선택)</em></label>
+            <p class="note" style="margin:0 0 10px">
+              API를 사용할 시 문장이 매번 다르게 작성됩니다. 비워두실 경우 사용 가능하나
+              사이트 안에서 문장을 만듭니다. 키는 입력창에만 머물고 저장되지 않습니다.
+            </p>
+            <input type="password" id="aiKey" placeholder="sk-ant-... (비워두면 사용 안 함)">
+          </div>
           <label class="lbl" for="aiVoice" style="margin:16px 0 8px">글의 시점</label>
           <select id="aiVoice">
             <option value="random">무작위로 (누를 때마다 다르게)</option>
@@ -2099,8 +2101,8 @@ const AI_MODEL = 'claude-haiku-4-5-20251001';   // 더 정교하게 쓰려면 'c
 // 프록시 주소를 넣으면 방문자가 키를 넣지 않아도 됩니다 (proxy/cloudflare-worker.js 참고)
 const AI_PROXY = 'https://perfume-proxy.gnuhbic9303.workers.dev';
 
-// 프록시를 쓰면 방문자에게 키를 물어볼 이유가 없으니 입력칸만 숨깁니다
-if(AI_PROXY && $('#aiKey')) $('#aiKey').style.display = 'none';
+// 프록시를 쓰면 방문자에게 키를 물어볼 이유가 없으니 그 부분만 숨깁니다
+if(AI_PROXY && $('#aiKeyBox')) $('#aiKeyBox').style.display = 'none';
 
 /* 서술 관점 — 같은 배합이라도 시점과 어조가 달라집니다 */
 const VOICES = {
